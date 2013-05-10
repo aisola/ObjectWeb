@@ -16,4 +16,4 @@ from webapi import *
 from response import *
 
 __author__ = ["Abram C. Isola <abram@isola.mn>"]
-__version__ = 1.0
+__version__ = "1.0 (Beta)"
