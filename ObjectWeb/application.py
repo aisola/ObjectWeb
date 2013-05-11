@@ -25,10 +25,12 @@ class Application(object):
     
     def _match(self, value):
         for pat, what in self.urlmap.iteritems():
-            result = re.compile("^" + str(pat) + "$").match(value)
+            result = re.compile("^" + str(pat) + "$").match(str(value))
             
             if result: # it's a match
                 return what, [x for x in result.groups()]
+        
+        print str(value)
         return None
     
     def handle(self):
@@ -82,6 +84,9 @@ class Application(object):
         ctx["ip"] = env.get('REMOTE_ADDR')
         ctx["method"] = env.get('REQUEST_METHOD')
         ctx["path"] = env.get('PATH_INFO')
+        
+        if ctx["path"] == None:
+            ctx["path"] = "/"
         
         QUERY = env.get('QUERY_STRING')
         if QUERY:
