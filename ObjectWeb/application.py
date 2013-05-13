@@ -103,7 +103,7 @@ class Application(object):
             if isinstance(v, str):
                 ctx[k] = v.decode('utf-8', 'replace')
     
-    def getwsgi(self):
+    def getwsgi(self,*middleware):
         
         def wsgi(env,start_response):
             self.load(env)
@@ -112,16 +112,19 @@ class Application(object):
             start_response(str(code),headers)
             return [output]
         
+        for mid in middleware:
+            wsgi = mid(wsgi)
+        
         return wsgi
     
-    def getcgi(self):
+    def getcgi(self,*middleware):
         """
         Return a CGI handler.
         """
-        return CGIHandler().run(self.getwsgi())
+        return CGIHandler().run(self.getwsgi(*middleware))
     
-    def run(self,host="localhost",port=80):
-        httpd_wsgi = make_server(host,port,self.getwsgi())
+    def run(self,host="localhost",port=80,*middleware):
+        httpd_wsgi = make_server(host,port,self.getwsgi(*middleware))
         try:
             httpd_wsgi.serve_forever()
         except KeyboardInterrupt:
