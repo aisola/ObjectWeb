@@ -121,7 +121,7 @@ class Application(object):
         """
         Return a CGI handler.
         """
-        return CGIHandler().run(self.getwsgi(*middleware))
+        return webapi.UnicodeCGIHandler().run(self.getwsgi(*middleware))
     
     def run(self,host="localhost",port=80,*middleware):
         httpd_wsgi = make_server(host,port,self.getwsgi(*middleware))

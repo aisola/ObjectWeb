@@ -13,6 +13,9 @@ import Cookie
 import urllib
 import itertools
 
+import sys, codecs
+from wsgiref.handlers import CGIHandler
+
 # Create the Application config, context, and _getvars
 global config, context, _getvars
 config = {}
@@ -43,6 +46,11 @@ def _safestr(obj, encoding='utf-8'):
         return str(obj)
 ############################################################################
 
+#############################################################################
+class UnicodeCGIHandler(CGIHandler):
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
+    _write = sys.stdout.write
+############################################################################
 
 # Functions
 def getheaders():
