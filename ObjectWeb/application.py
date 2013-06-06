@@ -25,7 +25,7 @@ class Application(object):
     
     def _match(self, value):
         for pat, what in self.urlmap.iteritems():
-            result = re.compile("^" + pat + "$").match(str(value))
+            result = re.compile("^" + str(pat) + "$").match(str(value))
             
             if result: # it's a match
                 return what, [x for x in result.groups()]
