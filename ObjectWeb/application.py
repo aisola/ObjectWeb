@@ -30,7 +30,6 @@ class Application(object):
             if result: # it's a match
                 return what, [x for x in result.groups()]
         
-        print str(value)
         return None
     
     def handle(self):
