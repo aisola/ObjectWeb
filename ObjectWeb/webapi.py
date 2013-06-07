@@ -16,11 +16,10 @@ import itertools
 import sys, codecs
 from wsgiref.handlers import CGIHandler
 
-# Create the Application config, context, and _getvars
-global config, context, _getvars
+# Create the Application config and context
+global config, context
 config = {}
 context = {}
-_getvars = {}
 
 config["debug"] = False
 
@@ -56,8 +55,11 @@ class UnicodeCGIHandler(CGIHandler):
 def getheaders():
     return context["headers"]
 
-def header(field,value): context["headers"].append((field,value))
-def status(stat): context["status"] = str(stat)
+def header(field,value):
+    context["headers"].append((field,value))
+    
+def status(stat):
+    context["status"] = str(stat)
 
 def setcookie(name, value, expires='', domain=None,
               secure=False, httponly=False, path=None):
@@ -82,4 +84,5 @@ def cookies():
     """Returns Cookies."""
     return context["environ"].get("HTTP_COOKIE", "")
 
-def request_var(varname): return _getvars.get(varname)
+def request_var(varname,default=None):
+    return context["requestvars"].getfirst(varname, default=default)

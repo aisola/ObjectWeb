@@ -10,7 +10,7 @@
 ################################################################################
 import os
 import re
-import urlparse
+import cgi
 
 import webapi
 import response
@@ -87,14 +87,14 @@ class Application(object):
         if ctx["path"] == None:
             ctx["path"] = "/"
         
-        QUERY = env.get('QUERY_STRING')
-        if QUERY:
-            webapi._getvars = urlparse.parse_qs(QUERY)
-            ctx["query"] = '?' + QUERY
-        else:
-            ctx["query"] = ''
-
-        ctx["fullpath"] = str(ctx["path"]) + str(ctx["query"])
+        # get the requestvars if post/put
+        if ctx["method"].lower() in ['post', 'put']:
+                fp = env.get('wsgi.input')
+                ctx["requestvars"] = cgi.FieldStorage(fp=fp, environ=env, keep_blank_values=1)
+        
+        # get the requestvars if get
+        if ctx["method"].lower() == 'get':
+            ctx["requestvars"] = cgi.FieldStorage(environ=env, keep_blank_values=1)
         
         for k, v in ctx.iteritems():
             # convert all string values to unicode values and replace 
