@@ -15,7 +15,7 @@ import urlparse
 import webapi
 import response
 from wsgiref.simple_server import make_server
-from wsgiref.handlers import CGIHandler
+#from wsgiref.handlers import CGIHandler
 
 class Application(object):
     
@@ -25,8 +25,7 @@ class Application(object):
     
     def _match(self, value):
         for pat, what in self.urlmap.iteritems():
-            #result = re.compile("^" + str(pat) + "$").match(str(value))
-            result = re.compile(str(pat)).match(str(value))
+            result = re.compile("^" + str(pat) + "$").match(str(value))
             
             if result: # it's a match
                 return what, [x for x in result.groups()]
