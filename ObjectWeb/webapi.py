@@ -70,7 +70,7 @@ def setcookie(name, value, expires='', domain=None,
     if expires < 0:
         expires = -1000000000
     morsel['expires'] = expires
-    morsel['path'] = path or context["homepath"]+'/'
+    morsel['path'] = path or ""
     if domain:
         morsel['domain'] = domain
     if secure:
