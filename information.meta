@@ -4,10 +4,14 @@ This Library is only compatible with Python 2.7.
 No reliance on third party libraries.
 
 Python Standard Libraries:
-	Cookie
-	itertools
 	os
 	re
-	urlparse
+	cgi
+	sys
+	Cookie
 	urllib
+	itertools
 	wsgiref (make_server and CGIHandler)
+
+Lines of code: 436
+
