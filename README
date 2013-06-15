@@ -1,0 +1,15 @@
+
+[TECHNICAL INFORMATION]
+	The ObjectWeb Framework has only been tested and developed with Python 2.7.
+	
+	There is currently no reliance on third party libraries.
+	
+	Python Standard Libraries: os, re, cgi, sys, Cookie, urllib, itertools, 
+		wsgiref (make_server & CGIHandler)
+	
+	Lines of code: 445
+
+
+[DOCUMENTATAION]
+	Documentation is currently being developed for ObjectWeb. However there are
+		some examples in the examples directory.
