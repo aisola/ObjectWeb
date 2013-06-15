@@ -10,6 +10,7 @@
 import os
 import re
 import cgi
+import cgitb
 
 import webapi
 import response
@@ -17,10 +18,37 @@ from wsgiref.simple_server import make_server
 #from wsgiref.handlers import CGIHandler
 
 class Application(object):
+    """
+        Creates the main interface from the server to the Python code.
+    """
     
     def __init__(self,urlmap={},debug=False):
+        """
+            *urlmap* should be a normal dict that maps a string that contains the
+            path (regular expression) as a key that maps to the name of a normal 
+            object that has HTTP Methods as functions that will be called on each
+            method.
+            
+            EXAMPLE:
+                import ObjectWeb
+                
+                class MainPage(object):
+                    def GET(self):
+                        ObjectWeb.header("Content-Type","text/html;charset=utf-8")
+                        return "<p>Hello, World!</p>"
+                
+                urls = {"/":MainPage}
+                
+                application = ObjectWeb.Application(urlmap=urls, debug=False)
+                application.run()
+            
+            *debug* when set to True, debug mode will be activated.
+        """
         self.urlmap = urlmap
         self.debug = debug
+        
+        if self.debug == True:
+            cgitb.enable()
     
     def _match(self, value):
         for pat, what in self.urlmap.iteritems():
@@ -102,7 +130,10 @@ class Application(object):
                 ctx[k] = v.decode('utf-8', 'replace')
     
     def getwsgi(self,*middleware):
-        
+        """
+            Returns a function that is callable by an external WSGI Server such as
+            Apache + mod_wsgi. It will add all *middleware to the function as well.
+        """
         def wsgi(env,start_response):
             self.load(env)
             code, output = self.handle()
@@ -117,11 +148,16 @@ class Application(object):
     
     def getcgi(self,*middleware):
         """
-        Return a CGI handler.
+            Creates a CGI run and producing CGI compatibility. It will add all 
+            *middleware to the output as well.
         """
         return webapi.UnicodeCGIHandler().run(self.getwsgi(*middleware))
     
     def run(self,host="localhost",port=80,*middleware):
+        """
+            Creates a development server binded to *host* and *port* and producing 
+            the output. It will add all *middleware to the output as well.
+        """
         httpd_wsgi = make_server(host,port,self.getwsgi(*middleware))
         try:
             httpd_wsgi.serve_forever()

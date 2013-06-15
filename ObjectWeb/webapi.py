@@ -52,12 +52,23 @@ class UnicodeCGIHandler(CGIHandler):
 
 # Functions
 def getheaders():
+    """
+        Returns all headers sent from the client.
+    """
     return context["headers"]
 
 def header(field,value):
+    """
+        Sets a header to be sent back to the client. both *field* and *value* 
+        should be strings.
+    """
     context["headers"].append((field,value))
     
 def status(stat):
+    """
+        Sets the status to return to the client. *stat* can be a string or an 
+        ObjectWeb response object from ObjectWeb.response.
+    """
     context["status"] = str(stat)
 
 def setcookie(name, value, expires='', domain=None,
@@ -80,8 +91,12 @@ def setcookie(name, value, expires='', domain=None,
     header('Set-Cookie', value)
     
 def cookies():
-    """Returns Cookies."""
+    """Returns all Cookies."""
     return context["environ"].get("HTTP_COOKIE", "")
 
 def request_var(varname,default=None):
+    """
+        Returns the HTTP variable *varname* using *default* if *varname* is 
+        not present in the HTTP Variables.
+    """
     return context["requestvars"].getfirst(varname, default=default)
