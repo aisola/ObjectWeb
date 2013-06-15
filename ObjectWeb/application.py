@@ -1,10 +1,9 @@
 #!/usr/bin/python
 ################################################################################
-## @author: Abram C. Isola
-## @organization: Abram C. Isola Programming
-## @contact: abram@isola.mn || http://abram.isola.mn/python/ObjectWeb
-## @copyright: Copyright (C) 2013 Abram C. Isola. All rights reserved.
-## @license: Undecided; So currently Closed Source.
+## @author: Abram C. Isola (Head Author)
+## @organization: Abram C. Isola Development
+## @contact: abram@isola.mn || http://abram.isola.mn/projects/ObjectWeb
+## @license: GPLv3 (See LICENSE)
 ## @summary: This document creates the Application Object that is 
 ##           crucial for the Framework.
 ################################################################################

@@ -1,4 +1,12 @@
 #!/usr/bin/python
+################################################################################
+## @author: Abram C. Isola (Head Author)
+## @organization: Abram C. Isola Development
+## @contact: abram@isola.mn || http://abram.isola.mn/projects/ObjectWeb
+## @license: GPLv3 (See LICENSE)
+## @summary: This document creates the Response Objects that are used to 
+##           identify the status.
+################################################################################
 import webapi
 
 ## 1XX Informational ##############################################################
