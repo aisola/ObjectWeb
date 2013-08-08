@@ -3,7 +3,7 @@
 ## @author: Abram C. Isola (Head Author)
 ## @organization: Abram C. Isola Development
 ## @contact: abram@isola.mn || http://abram.isola.mn/projects/ObjectWeb
-## @license: GPLv3 (See LICENSE)
+## @license: LGPLv3 (See LICENSE)
 ## @summary: This document initializes the ObjectWeb Framework for use.
 ## 
 ## @precondition: Apache2 MUST be configured correctly with mod_wsgi if 
