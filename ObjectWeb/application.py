@@ -113,9 +113,10 @@ class Application(object):
         # No match, return None.
         return None
     
-    def handle(self):
+    def _handle(self):
         """
             *THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
+             - Called by: wsgi()
 
             This method calls self._match() to find the handler then calls the 
             correct method (GET, POST, etc.) to handle the request.
@@ -164,11 +165,15 @@ class Application(object):
         # return the status & the output
         return webapi.context["status"], webapi.context["output"]
     
-    def load(self,env):
+    def _load(self,env):
         """
             *THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
+             - Called by: wsgi()
             
             Loads the Application environment.
+
+            @param env: *dict* A regular python dict that is recieved from the 
+            webserver and holds the environment variables.
 
             @return: None
         """
@@ -231,32 +236,66 @@ class Application(object):
     
     def getwsgi(self,*middleware):
         """
-            Returns a function that is callable by an external WSGI Server such as
-            Apache + mod_wsgi. It will add all *middleware to the function as well.
+            Creates a WSGI function that can be passed to a webserver run run. 
+            It will add all *middleware to the function as well.
+            
+            @param *middleware: *object* Python WSGI Middleware-compliant 
+            objects that passed as *args that will be applied as middleware to 
+            the application.
+            
+            @return: a function that is callable by an external WSGI Server
+            such as Apache + mod_wsgi.
         """
-        def wsgi(env,start_response):
-            self.load(env)
-            code, output = self.handle()
+        # Create the function
+        def wsgi(env, start_response):
+            # Load the environment.
+            self._load(env)
+
+            # Handle the request & Recieve status + output
+            code, output = self._handle()
+
+            # Get headers.
             headers = webapi.getheaders()
+
+            # Send Complete WSGI request
             start_response(str(code),headers)
             return [output]
-        
+
+        # Apply middleware.
         for mid in middleware:
             wsgi = mid(wsgi)
-        
+
+        # Return function
         return wsgi
     
     def getcgi(self,*middleware):
         """
             Creates a CGI run and producing CGI compatibility. It will add all 
             *middleware to the output as well.
+            
+            @param *middleware: *object* Python WSGI Middleware-compliant 
+            objects that passed as *args that will be applied as middleware to 
+            the application.
+            
+            @return: returns CGI compliant output.
         """
         return webapi.UnicodeCGIHandler().run(self.getwsgi(*middleware))
     
-    def run(self,host="localhost",port=80,*middleware):
+    def run(self,host="localhost",port=8080,*middleware):
         """
-            Creates a development server binded to *host* and *port* and producing 
-            the output. It will add all *middleware to the output as well.
+            Creates a development server binded to *host* and *port* and 
+            producing the output. It will add all *middleware to the output as 
+            well.
+            
+            @param host: *str* The host that the run should be bound to.
+            
+            @param port: *int* The port that the run should be bound to.
+            
+            @param *middleware: *object* Python WSGI Middleware-compliant 
+            objects that passed as *args that will be applied as middleware to 
+            the application.
+            
+            @return: None
         """
         httpd_wsgi = make_server(host,port,self.getwsgi(*middleware))
         try:
