@@ -7,42 +7,80 @@
 ## @summary: This document creates the Application Object that is 
 ##           crucial for the Framework.
 ################################################################################
+
+################################################################################
+# Import Standard Libraries
+################################################################################
 import os
 import re
 import cgi
 import cgitb
 
-import webapi
-import response
 from wsgiref.simple_server import make_server
 #from wsgiref.handlers import CGIHandler
 
+################################################################################
+# Import ObjectWeb
+################################################################################
+import webapi
+import response
+
+################################################################################
+# ObjectWeb Shitty Documentation
+################################################################################
+"""
+ObjectWeb is a fast, minimalist, pure-Python web framework that relies on no 
+third party libraries. It is designed around using Python as it was originally 
+intended to be used: as an Object Oriented Programming language. ObjectWeb 
+supports the CGI and WSGI 1.0 standards and has a built-in development server.
+
+Normal Usage of the ObjectWeb library is as follows.
+
+    import ObjectWeb  # import the library.
+
+    class MainPage(object): # Any object can be a handler
+        "The main page hadler."
+
+        def GET(self):
+            "The GET method handler."
+            return "Output content here..."
+
+        # Make the POST method mimic the GET method.
+        POST = GET
+        
+    # Create the Application Object.
+    app = ObjectWeb.Appliation({
+        "/": MainPage,              # Point the / path to be handled by MainPage
+    }, debug=False)                 # Set debug to False for production.
+
+
+ObjectWeb can be used for many things. Feel free to include other libraries like
+ORMs or Templating Engines to assist you in your development.
+
+"""
+
 class Application(object):
     """
-        Creates the main interface from the server to the Python code.
+        This is the main interface between the webserver and the application.
     """
     
     def __init__(self,urlmap={},debug=False):
         """
-            *urlmap* should be a normal dict that maps a string that contains the
-            path (regular expression) as a key that maps to the name of a normal 
-            object that has HTTP Methods as functions that will be called on each
-            method.
+            *THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
             
-            EXAMPLE:
-                import ObjectWeb
-                
-                class MainPage(object):
-                    def GET(self):
-                        ObjectWeb.header("Content-Type","text/html;charset=utf-8")
-                        return "<p>Hello, World!</p>"
-                
-                urls = {"/":MainPage}
-                
-                application = ObjectWeb.Application(urlmap=urls, debug=False)
-                application.run()
+            Initializes the Application Object.
             
-            *debug* when set to True, debug mode will be activated.
+            @param urlmap: *dict* This is a normal python dict who keys are
+            python re strings that map to python objects that have at least a 
+            function GET that handles the requests. The re strings can capture 
+            sections of the urls by enclosing those sections in parentheses ().
+            Those sections will be passed as arguments to the handler method 
+            function.
+
+            @param debug: *bool* This tells ObjectWeb whether or not to use the
+            debugging facility.
+
+            @return: Application Object.
         """
         self.urlmap = urlmap
         self.debug = debug
@@ -50,84 +88,146 @@ class Application(object):
         if self.debug == True:
             cgitb.enable()
     
-    def _match(self, value):
-        for pat, what in self.urlmap.iteritems():
-            result = re.compile("^" + str(pat) + "$").match(str(value))
+    def _match(self, rpath):
+        """
+            *THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
+             - Called by self.handle()
             
-            if result: # it's a match
+            Matches the request path to the object that should handle the
+            requst and returns the object or None if no match exists.
+
+            @param rpath: *str* The webserver request path.
+
+            @return: The matched handler object + a list of prettyurl arguments 
+            OR None if there was no match.
+        """
+        # Check each pattern key against the request path.
+        for pat, what in self.urlmap.iteritems():
+            result = re.compile("^" + str(pat) + "$").match(str(rpath))
+
+            # If there is a result, then we've matched a handler.
+            # Return the handler object and the prettyurl arguments.
+            if result:
                 return what, [x for x in result.groups()]
-        
+
+        # No match, return None.
         return None
     
     def handle(self):
-        urlmatch = self._match(webapi.context["path"])
-        
-        if urlmatch:
-            inst = urlmatch[0]()
-            args = urlmatch[1]
-            if hasattr(inst, webapi.context["method"]):
-                func = getattr(inst,webapi.context["method"])
-                webapi.context["output"] = func(*args)
+        """
+            *THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
+
+            This method calls self._match() to find the handler then calls the 
+            correct method (GET, POST, etc.) to handle the request.
+
+            @return: The processed request's status and output.
+        """
+        # Get the HandlerObj
+        HandlerObj = self._match(webapi.context["path"])
+
+        # If the HandlerObj is not None then process it.
+        if HandlerObj:
+            # Create the instance and store the arguments.
+            HandlerInst = HandlerObj[0]()
+            args = HandlerObj[1]
+
+            # If the HandlerObj has the method function available.
+            if hasattr(HandlerInst, webapi.context["method"]):
+                # Run the method, passing in the arguments. Capture the output.
+                method_func = getattr(HandlerInst,webapi.context["method"])
+                webapi.context["output"] = method_func(*args)
+
+            # Otherwise throw an HTTP 405 Method Not Allowed.
             else:
                 webapi.status(response.MethodNotAllowed())
+                # Check if the application has defined a 405 page...
                 if "HTTP-405" in self.urlmap:
                     cls = self.urlmap["HTTP-405"]
-                    inst = cls()
-                    webapi.context["output"] = inst.GET()
+                    HandlerInst = cls()
+                    webapi.context["output"] = HandlerInst.GET()
+                # If not, provide one.
                 else:
                     webapi.context["output"] = "Method Not Allowed: The method used is not allowed for this resource."
+
+        # The HandlerObj is None.
         else:
             webapi.status(response.NotFound())
+            # Check if the application has defined a 405 page...
             if "HTTP-404" in self.urlmap:
                 cls = self.urlmap["HTTP-404"]
-                inst = cls()
-                webapi.context["output"] = inst.GET()
+                HandlerInst = cls()
+                webapi.context["output"] = HandlerInst.GET()
+            # If not, provide one.
             else:
                 webapi.context["output"] = "Not Found: The requested URL was not found."
+
+        # return the status & the output
         return webapi.context["status"], webapi.context["output"]
     
     def load(self,env):
-        ctx = webapi.context
-        ctx.clear()
-        ctx["status"] = "200 OK"
+        """
+            *THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
+            
+            Loads the Application environment.
+
+            @return: None
+        """
+        # Clean the slate.
+        webapi.context.clear()
+
+        # Set the default status.
+        webapi.context["status"] = "200 OK"
         webapi.status(response.OK())
-        ctx["headers"] = []
-        ctx["output"] = ''
-        ctx["environ"] = env
-        ctx["host"] = env.get('HTTP_HOST')
-        
+
+        # Initiate the headers, output, and environ
+        webapi.context["headers"] = []
+        webapi.context["output"] = ''
+        webapi.context["environ"] = env
+
+        # Set the host
+        webapi.context["host"] = env.get('HTTP_HOST')
+
+        # Set the HTTP Scheme.
         if env.get('wsgi.url_scheme') in ['http', 'https']:
-            ctx["protocol"] = env['wsgi.url_scheme']
+            webapi.context["protocol"] = env['wsgi.url_scheme']
         elif env.get('HTTPS', '').lower() in ['on', 'true', '1']:
-            ctx["protocol"] = 'https'
+            webapi.context["protocol"] = 'https'
         else:
-            ctx["protocol"] = 'http'
-        
-        ctx["homedomain"] = ctx["protocol"] + '://' + env.get('HTTP_HOST', '[unknown]')
-        ctx["homepath"] = os.environ.get('REAL_SCRIPT_NAME', env.get('SCRIPT_NAME', ''))
-        ctx["home"] = ctx["homedomain"] + ctx["homepath"]
-        ctx["realhome"] = ctx["home"]
-        ctx["ip"] = env.get('REMOTE_ADDR')
-        ctx["method"] = env.get('REQUEST_METHOD')
-        ctx["path"] = env.get('PATH_INFO')
-        
-        if ctx["path"] == None:
-            ctx["path"] = "/"
+            webapi.context["protocol"] = 'http'
+
+        # Set home domain, home path, and home
+        webapi.context["homedomain"] = webapi.context["protocol"] + '://' + env.get('HTTP_HOST', '[unknown]')
+        webapi.context["homepath"] = os.environ.get('REAL_SCRIPT_NAME', env.get('SCRIPT_NAME', ''))
+        webapi.context["home"] = webapi.context["homedomain"] + webapi.context["homepath"]
+        webapi.context["realhome"] = webapi.context["home"]
+
+        # Set the Requester's IP, the Method, and the path.
+        webapi.context["ip"] = env.get('REMOTE_ADDR')
+        webapi.context["method"] = env.get('REQUEST_METHOD')
+        webapi.context["path"] = env.get('PATH_INFO')
+
+        # To fix empty-path bug.
+        if webapi.context["path"] == None:
+            webapi.context["path"] = "/"
         
         # get the requestvars if post/put
-        if ctx["method"].lower() in ['post', 'put']:
+        if webapi.context["method"].lower() in ['post', 'put']:
                 fp = env.get('wsgi.input')
-                ctx["requestvars"] = cgi.FieldStorage(fp=fp, environ=env, keep_blank_values=1)
+                webapi.context["requestvars"] = cgi.FieldStorage(fp=fp, 
+                                                            environ=env, 
+                                                            keep_blank_values=1)
         
         # get the requestvars if get
-        if ctx["method"].lower() == 'get':
-            ctx["requestvars"] = cgi.FieldStorage(environ=env, keep_blank_values=1)
+        if webapi.context["method"].lower() == 'get':
+            webapi.context["requestvars"] = cgi.FieldStorage(environ=env,
+                                                            keep_blank_values=1)
+
         
-        for k, v in ctx.iteritems():
-            # convert all string values to unicode values and replace 
-            # malformed data with a suitable replacement marker.
+        # convert all string values to unicode values and replace 
+        # malformed data with a suitable replacement marker.
+        for k, v in webapi.context.iteritems():
             if isinstance(v, str):
-                ctx[k] = v.decode('utf-8', 'replace')
+                webapi.context[k] = v.decode('utf-8', 'replace')
     
     def getwsgi(self,*middleware):
         """
