@@ -7,9 +7,13 @@
 ## @summary: This document creates the Response Objects that are used to 
 ##           identify the status.
 ################################################################################
+
+################################################################################
+# Import
+################################################################################
 import webapi
 
-## 1XX Informational ##############################################################
+## 1XX Informational ###########################################################
 class Continue(object):
     def __str__(self): return "100 Continue"
     def __int__(self): return 100
@@ -22,7 +26,7 @@ class Processing(object):
     def __str__(self): return "102 Processing"
     def __int__(self): return 102
 
-## 2XX Success ####################################################################
+## 2XX Success #################################################################
 class OK(object):
     def __str__(self): return "200 OK"
     def __int__(self): return 200
@@ -59,7 +63,7 @@ class IMUsed(object):
     def __str__(self): return "226 IM Used"
     def __int__(self): return 226
 
-## 3XX Redirection ################################################################
+## 3XX Redirection #############################################################
 class MovedPermanently(object):
     def __init__(self,location):
         webapi.header("Location",str(location))
@@ -92,7 +96,7 @@ class PermanentRedirect(object):
     def __str__(self): return "308 Permanent Redirect"
     def __int__(self): return 308
 
-## 4XX Client Error ###############################################################
+## 4XX Client Error ############################################################
 class BadRequest(object):
     def __str__(self): return "400 Bad Request"
     def __int__(self): return 400
@@ -197,7 +201,7 @@ class RequestHeaderFieldsTooLarge(object):
     def __str__(self): return "431 Request Header Fields Too Large"
     def __int__(self): return 431
 
-## 5XX Server Error ###############################################################
+## 5XX Server Error ############################################################
 class InternalServerError(object):
     def __str__(self): return "500 Internal Server Error"
     def __int__(self): return 500
