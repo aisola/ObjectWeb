@@ -154,7 +154,7 @@ def cookies():
     """
     return context["environ"].get("HTTP_COOKIE", None)
 
-def request_var(varname, default=None):
+def getvar(varname, default=None):
     """
         Returns the given HTTP parameter.
 
@@ -168,3 +168,23 @@ def request_var(varname, default=None):
         default OR if default is not provided, None.
     """
     return context["requestvars"].getfirst(varname, default=default)
+
+request_var = getvar
+
+def getvars(*args):
+    """
+        Returns the given HTTP parameter.
+        
+        @param *args: *tuple* The (name, default) pairs of the HTTP parameters 
+        that should be returned.
+        
+        @return: The list of values of the HTTP parameter OR if provided, the 
+        value of default OR if default is not provided, None.
+    """
+    # Get the params
+    http_params = []
+    for paramgrp in args:
+        http_params.append(getvar(paramgrp[0]), paramgrp[0] or None)
+
+    # return params
+    return http_params
