@@ -8,10 +8,22 @@
 ##           processing.
 ################################################################################
 
+
+################################################################################
+# Import Standard Libraries
+################################################################################
 import copy
 
+
+################################################################################
+# Import ObjectWeb
+################################################################################
 import ObjectWeb.webapi as webapi
 
+
+################################################################################
+# ObjectWeb Form Helper Functions
+################################################################################
 def attrget(obj, attr, value=None):
     try:
         if hasattr(obj, 'has_key') and obj.has_key(attr): 
@@ -24,6 +36,10 @@ def attrget(obj, attr, value=None):
         return getattr(obj, attr)
     return value
 
+
+################################################################################
+# Form Class
+################################################################################
 class Form(object):
     
     def __init__(self, *inputs, **kwargs):
@@ -76,7 +92,7 @@ class Form(object):
         self.value = value
         for v in self.validators:
             if not v.valid(value):
-                self.note = v.msg
+                self.error = v.msg
                 return False
         return True
 
@@ -95,3 +111,70 @@ class Form(object):
             return self.inputs[i]
         except KeyError:
             return default
+
+
+################################################################################
+# Input Base Class
+################################################################################
+
+class Input(object):
+    def __init__(self, name, *validators, **attrs):
+        self.name = name
+        self.validators = validators
+        self.attrs = attrs = AttributeList(attrs)
+        
+        self.label = attrs.pop('label', name)
+        self.value = attrs.pop('value', None)
+        self.error = None
+        
+        self.id = attrs.setdefault('id', self.get_default_id())
+        
+        if 'class_' in attrs:
+            attrs['class'] = attrs['class_']
+            del attrs['class_']
+        
+    def get_type(self):
+        raise NotImplementedError
+        
+    def get_default_id(self):
+        return self.name
+
+    def validate(self, value):
+        self.set_value(value)
+
+        for v in self.validators:
+            if not v.valid(value):
+                self.error = v.msg
+                return False
+        return True
+
+    def set_value(self, value):
+        self.value = value
+
+    def get_value(self):
+        return self.value
+
+    def render(self):
+        attrs = self.attrs.copy()
+        attrs['type'] = self.get_type()
+        if self.value is not None:
+            attrs['value'] = self.value
+        attrs['name'] = self.name
+        return '<input %s/>' % attrs
+        
+    def addatts(self):
+        # add leading space for backward-compatibility
+        return " " + str(self.attrs)
+
+# AttributeList Helper Class
+class AttributeList(dict):
+    def copy(self):
+        return AttributeList(self)
+        
+    def __str__(self):
+        return " ".join(['%s="%s"' % (k, v) for k, v in self.items()])
+        
+    def __repr__(self):
+        return '<attrs: %s>' % repr(str(self))
+
+

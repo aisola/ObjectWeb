@@ -59,6 +59,9 @@ ORMs or Templating Engines to assist you in your development.
 
 """
 
+################################################################################
+# Classes
+################################################################################
 class Application(object):
     """
         This is the main interface between the webserver and the application.
