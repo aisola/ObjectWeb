@@ -26,7 +26,7 @@ context = {}
 config["debug"] = False
 
 ################################################################################
-# _safestr function from web.py
+# _safestr & autoassign functions from web.py
 ################################################################################
 def _safestr(obj, encoding='utf-8'):
     r"""
@@ -47,6 +47,24 @@ def _safestr(obj, encoding='utf-8'):
         return itertools.imap(_safestr, obj)
     else:
         return str(obj)
+
+def autoassign(self, locals):
+    """
+    Automatically assigns local variables to `self`.
+    
+        >>> self = storage()
+        >>> autoassign(self, dict(a=1, b=2))
+        >>> self
+        <Storage {'a': 1, 'b': 2}>
+    
+    Generally used in `__init__` methods, as in:
+
+        def __init__(self, foo, bar, baz=1): autoassign(self, locals())
+    """
+    for (key, value) in locals.iteritems():
+        if key == 'self': 
+            continue
+        setattr(self, key, value)
 
 ################################################################################
 # Unicode CGI Handler

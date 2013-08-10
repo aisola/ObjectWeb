@@ -13,6 +13,7 @@
 # Import Standard Libraries
 ################################################################################
 import copy
+import re
 
 
 ################################################################################
@@ -177,4 +178,162 @@ class AttributeList(dict):
     def __repr__(self):
         return '<attrs: %s>' % repr(str(self))
 
+################################################################################
+# Simple Input Subclasses
+################################################################################
+class Textbox(Input):
+    def get_type(self):
+        return 'text'
 
+class Password(Input):    
+    def get_type(self):
+        return 'password'
+
+class Hidden(Input):
+    def get_type(self):
+        return 'hidden'
+
+class File(Input):
+    def get_type(self):
+        return 'file'
+
+################################################################################
+# Slightly-More-Complicated Input Subclasses
+################################################################################
+class Textarea(Input):
+    def render(self):
+        attrs = self.attrs.copy()
+        attrs['name'] = self.name
+        value = self.value or ''
+        return '<textarea %s>%s</textarea>' % (attrs, value)
+
+class Dropdown(Input):
+    def __init__(self, name, args, *validators, **attrs):
+        self.args = args
+        super(Dropdown, self).__init__(name, *validators, **attrs)
+
+    def render(self):
+        attrs = self.attrs.copy()
+        attrs['name'] = self.name
+        
+        x = '<select %s>\n' % attrs
+        
+        for arg in self.args:
+            x += self._render_option(arg)
+
+        x += '</select>\n'
+        return x
+
+    def _render_option(self, arg, indent='  '):
+        if isinstance(arg, (tuple, list)):
+            value, desc= arg
+        else:
+            value, desc = arg, arg 
+
+        if self.value == value or (isinstance(self.value, list) and value in self.value):
+            select_p = ' selected="selected"'
+        else:
+            select_p = ''
+        return indent + '<option%s value="%s">%s</option>\n' % (select_p, value, desc)
+        
+
+class GroupedDropdown(Dropdown):
+    def __init__(self, name, args, *validators, **attrs):
+        self.args = args
+        super(Dropdown, self).__init__(name, *validators, **attrs)
+
+    def render(self):
+        attrs = self.attrs.copy()
+        attrs['name'] = self.name
+        
+        x = '<select %s>\n' % attrs
+        
+        for label, options in self.args:
+            x += '  <optgroup label="%s">\n' % label
+            for arg in options:
+                x += self._render_option(arg, indent = '    ')
+            x +=  '  </optgroup>\n'
+            
+        x += '</select>\n'
+        return x
+
+class Radio(Input):
+    def __init__(self, name, args, *validators, **attrs):
+        self.args = args
+        super(Radio, self).__init__(name, *validators, **attrs)
+
+    def render(self):
+        x = '<span>'
+        for arg in self.args:
+            if isinstance(arg, (tuple, list)):
+                value, desc= arg
+            else:
+                value, desc = arg, arg 
+            attrs = self.attrs.copy()
+            attrs['name'] = self.name
+            attrs['type'] = 'radio'
+            attrs['value'] = value
+            if self.value == value:
+                attrs['checked'] = 'checked'
+            x += '<input %s/> %s' % (attrs, desc)
+        x += '</span>'
+        return x
+
+class Checkbox(Input):
+    def __init__(self, name, *validators, **attrs):
+        self.checked = attrs.pop('checked', False)
+        Input.__init__(self, name, *validators, **attrs)
+        
+    def get_default_id(self):
+        value = self.value or ""
+        return self.name + '_' + value.replace(' ', '_')
+
+    def render(self):
+        attrs = self.attrs.copy()
+        attrs['type'] = 'checkbox'
+        attrs['name'] = self.name
+        attrs['value'] = self.value
+
+        if self.checked:
+            attrs['checked'] = 'checked'            
+        return '<input %s/>' % attrs
+
+    def set_value(self, value):
+        self.checked = bool(value)
+
+    def get_value(self):
+        return self.checked
+
+class Button(Input):
+    def __init__(self, name, *validators, **attrs):
+        super(Button, self).__init__(name, *validators, **attrs)
+        self.description = ""
+
+    def render(self):
+        attrs = self.attrs.copy()
+        attrs['name'] = self.name
+        if self.value is not None:
+            attrs['value'] = self.value
+        html = attrs.pop('html', None) or self.name
+        return '<button %s>%s</button>' % (attrs, html)
+
+################################################################################
+# Validators
+################################################################################
+
+class Validator:
+    def __deepcopy__(self, memo): return copy.copy(self)
+    def __init__(self, msg, test): webapi.autoassign(self, locals())
+    def valid(self, value): 
+        try: return self.test(value)
+        except: return False
+
+Required = Validator("Required", bool)
+
+class RegExp(Validator):
+    def __init__(self, rexp, msg):
+        self.rexp = re.compile(rexp)
+        self.msg = msg
+    
+    def valid(self, value):
+        return bool(self.rexp.match(value))
