@@ -1,0 +1,16 @@
+CHANGELOG
+=========
+
+Version 1.5
+-----------
+
+- Added Changelog
+- Updated Readme
+- Changed ObjectWeb.webapi.request_var to ObjectWeb.webapi.getvar, however, kept backwords compatability.Added
+- Added ObjectWeb.webapi.getvars.
+- Better commenting/documentation.
+
+
+Versions 1.1 - 1.5
+------------------
+VERSIONS 1.1 through 1.4 were never officially released.
