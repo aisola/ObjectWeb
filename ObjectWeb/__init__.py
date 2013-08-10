@@ -21,5 +21,5 @@ from response import *
 # Meta Information
 ################################################################################
 __author__ = ["See CONTRIB"]
-__version__ = "1.5 (Beta)"
+__version__ = "1.5.2 (Beta)"
 __url__ = "http://gihub.com/aisola/ObjectWeb"

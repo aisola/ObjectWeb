@@ -11,7 +11,7 @@ from distutils.core import setup
 
 setup(
     name='ObjectWeb',
-    version='1.5 (Beta)',
+    version="1.5.2 (Beta)",
     author='Abram C. Isola',
     author_email='abram@isola.mn',
     packages=['ObjectWeb'],
