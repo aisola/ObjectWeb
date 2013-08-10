@@ -188,3 +188,6 @@ def getvars(*args):
 
     # return params
     return http_params
+
+def getallvars():
+    return context["requestvars"]
