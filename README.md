@@ -13,11 +13,11 @@ The ObjectWeb Framework has only been tested and developed with Python 2.7.
 + There is currently no reliance on third party libraries.
 + Map your URLS to request paths using regular expressions.
 + Easily extract information from the request.
-+ *Experimental* form processing and validation module.
++ **Experimental** form processing and validation module.
 
 ### Known Issues
 
-1. In the *experimental* module `ObjectWeb.exper.form`, validation does not yet 
+1. In the **experimental** module `ObjectWeb.exper.form`, validation does not yet 
    work. However, it is still very good at the creation of forms and retrieving 
    data from forms.
 2. The debug operation does not really work...
