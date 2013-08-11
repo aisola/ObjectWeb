@@ -14,7 +14,7 @@ setup(
     version="1.5.2 (Beta)",
     author='Abram C. Isola',
     author_email='abram@isola.mn',
-    packages=['ObjectWeb'],
+    packages=['ObjectWeb',"ObjectWeb.exper"],
     url='http://abram.isola.mn/projects/ObjectWeb',
     description='A pure-Python standalone Web Framework for WSGI and CGI.',
 )
