@@ -202,7 +202,7 @@ def getvars(*args):
     # Get the params
     http_params = []
     for paramgrp in args:
-        http_params.append(getvar(paramgrp[0]), paramgrp[0] or None)
+        http_params.append(getvar(paramgrp[0]), paramgrp[1] or None)
 
     # return params
     return http_params

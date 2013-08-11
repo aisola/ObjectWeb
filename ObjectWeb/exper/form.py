@@ -62,7 +62,7 @@ class Form(object):
         else:
             form_out += '<div class="ow_form">\n'
 
-        form_out += '<form method="POST" enctype="application/x-www-form-urlencoded">'
+        form_out += '<form method="POST" enctype="multipart/form-data">'
         
         form_out += '<div class="form_error">%s</div>' % self.error
         
