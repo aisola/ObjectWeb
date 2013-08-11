@@ -27,6 +27,27 @@ The ObjectWeb Framework has only been tested and developed with Python 2.7.
 Documentation is currently being developed for ObjectWeb. However there are 
 some examples in the examples directory.
 
+### ObjectWeb in a Nutshell
+
+General Usage of the ObjectWeb library is as follows.
+
+    import ObjectWeb  # import the library.
+
+    class MainPage(object): # Any object can be a handler
+        "The main page hadler."
+
+        def GET(self):
+            "The GET method handler."
+            return "Output content here..."
+
+        # Make the POST method mimic the GET method.
+        POST = GET
+        
+    # Create the Application Object.
+    app = ObjectWeb.Appliation({
+        "/": MainPage,              # Point the / path to be handled by MainPage
+    }, debug=False)                 # Set debug to False for production.
+
 ### Installation
     git clone https://github.com/aisola/ObjectWeb.git
     cd ObjectWeb
