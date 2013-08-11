@@ -1,7 +1,5 @@
-ObjectWeb
-=========
-OOP Python Web Framework
-------------------------
+ObjectWeb: OOP Python Web Framework
+-----------------------------------
 
 ObjectWeb is a fast, minimalist, pure-Python web framework that relies on no 
 third party libraries. It is designed around using Python as it was originally 
