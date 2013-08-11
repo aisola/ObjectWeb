@@ -202,10 +202,17 @@ def getvars(*args):
     # Get the params
     http_params = []
     for paramgrp in args:
-        http_params.append(getvar(paramgrp[0]), paramgrp[1] or None)
+        http_params.append(getvar(paramgrp[0], paramgrp[1] or None))
 
     # return params
     return http_params
 
 def getallvars():
-    return context["requestvars"]
+    def dictify(fs): 
+        # hack to make web.input work with enctype='text/plain.
+        if fs.list is None:
+            fs.list = [] 
+
+        return dict([(k, fs[k]) for k in fs.keys()])
+
+    return dictify(context["requestvars"])

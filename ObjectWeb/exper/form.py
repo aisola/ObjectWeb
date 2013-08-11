@@ -153,7 +153,10 @@ class Input(object):
         self.value = value
 
     def get_value(self):
-        return self.value
+        try:
+            return self.value.value
+        except:
+            return self.value
 
     def render(self):
         attrs = self.attrs.copy()
