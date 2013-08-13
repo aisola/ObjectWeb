@@ -282,13 +282,25 @@ class Button(Field):
     def show_label(self):
         return False
 
+    def get_type(self):
+        return "button"
+
     def render(self):
         attrs = self.attrs.copy()
+        attrs["type"] = self.get_type()
         
         if self.value is not None:
-            attrs['value'] = self.value
+            attrs['value'] = self.label or self.name
 
         return "<input %s />" % attrs
+
+class Submit(Button):
+    
+    def __init__(self, name, **attrs):
+        super(Submit, self).__init__(name, **attrs)
+
+    def get_type(self):
+        return "submit"
 
 ################################################################################
 # Validator
