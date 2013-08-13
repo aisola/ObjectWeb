@@ -3,7 +3,7 @@ import ObjectWeb
 import ObjectWeb.exper.forms as forms
 
 def passmatch(form):
-    return form.password == form.password2
+    return form.password.get_value() == form.password2.get_value()
 
 myform = forms.Form(
     forms.Textbox("username",label="Username"),
@@ -19,14 +19,16 @@ class MainPage(object):
 
     def GET (self):
         ObjectWeb.header("Content-Type","text/html;chatset=utf-8")
-        return myform.render()
+        frm = myform()
+        return frm.render()
 
     def POST(self):
         ObjectWeb.header("Content-Type","text/html;chatset=utf-8")
-        if not myform.validates():
-            return "FAILED: " + str(myform.password) + " " + str(myform.password2)
+        frm = myform()
+        if not frm.validates():
+            return "FAILED: " + str(frm.password.get_value()) + " " + str(frm.password2.get_value())
         else:
-            return myform.username + " " + myform.password
+            return frm.username.get_value() + " " + frm.password.get_value()
 
 ObjectWeb.Application({
     "/": MainPage,

@@ -12,6 +12,11 @@
 ################################################################################
 # Import ObjectWeb
 ################################################################################
+import copy
+
+################################################################################
+# Import ObjectWeb
+################################################################################
 import ObjectWeb.webapi as webapi
 
 ################################################################################
@@ -27,8 +32,13 @@ class Form(object):
         self.error = None
         self.valid = True
 
+    def __call__(self):
+        return copy.deepcopy(self)
+
     def __getattr__(self, name):
-        for field in self.fields:
+        # don't interfere with deepcopy
+        fields = self.__dict__.get('fields') or []
+        for field in fields:
             if field.name == name:
                 return field
         raise AttributeError, name
@@ -285,6 +295,9 @@ class Button(Field):
 ################################################################################
 
 class Validator(object):
+    
+    def __deepcopy__(self, memo):
+        return copy.copy(self)
     
     def __init__(self, message, booltest):
         self.message = message
