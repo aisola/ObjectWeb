@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+Version 1.5.2r2 (Beta)
+----------------------
+- Addition of *untested* working Form API.
+- Changed Standard heading for files.
+- Updated Versioning Information.
+- getallvars is **gone**.
+
 Version 1.5.2 (Beta)
 --------------------
 - Addition of experimental projects folder (ObjectWeb.exper)

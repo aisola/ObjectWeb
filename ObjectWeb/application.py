@@ -1,11 +1,11 @@
 #!/usr/bin/python
 ################################################################################
-## @author: Abram C. Isola (Head Author)
-## @organization: Abram C. Isola Development
-## @contact: abram@isola.mn || http://abram.isola.mn/projects/ObjectWeb
-## @license: LGPLv3 (See LICENSE)
+## contact: abram@isola.mn || https://github.com/aisola/ObjectWeb
+## license: LGPLv3
 ## @summary: This document creates the Application Object that is 
 ##           crucial for the Framework.
+## maintaier: Abram C. Isola <abram@isola.mn>
+## contrib: Abram C. Isola <abram@isola.mn> (all)
 ################################################################################
 
 ################################################################################

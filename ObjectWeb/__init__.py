@@ -1,13 +1,10 @@
 #!/usr/bin/python
 ################################################################################
-## @author: Abram C. Isola (Head Author)
-## @organization: Abram C. Isola Development
-## @contact: abram@isola.mn || http://abram.isola.mn/projects/ObjectWeb
-## @license: LGPLv3 (See LICENSE)
-## @summary: This document initializes the ObjectWeb Framework for use.
-## 
-## @precondition: Apache2 MUST be configured correctly with mod_wsgi if 
-##                Apache will be used as the server.
+## contact: abram@isola.mn || https://github.com/aisola/ObjectWeb
+## license: LGPLv3
+## summary: This document initializes the ObjectWeb Framework for use.
+## maintaier: Abram C. Isola <abram@isola.mn>
+## contrib: Abram C. Isola <abram@isola.mn> (all)
 ################################################################################
 
 ################################################################################

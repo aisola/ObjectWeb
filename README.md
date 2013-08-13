@@ -17,11 +17,8 @@ The ObjectWeb Framework has only been tested and developed with Python 2.7.
 
 ### Known Issues
 
-1. In the **experimental** module `ObjectWeb.exper.form`, validation does not yet 
-   work. However, it is still very good at the creation of forms and retrieving 
-   data from forms.
-2. The debug operation does not really work...
-3. There is no real documentation... Yet.
+1. The debug operation does **not** work **at all**..,
+2. There is no real documentation... Yet.
 
 ### Documentation
 Documentation is currently being developed for ObjectWeb. However there are 

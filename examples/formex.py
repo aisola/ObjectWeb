@@ -24,4 +24,4 @@ class MainPage(object):
 
 ObjectWeb.Application({
     "/": MainPage,
-}).run()
+}).run(port=8080)

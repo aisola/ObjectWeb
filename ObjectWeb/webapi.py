@@ -1,11 +1,11 @@
 #!/usr/bin/python
 ################################################################################
-## @author: Abram C. Isola (Head Author)
-## @organization: Abram C. Isola Development
-## @contact: abram@isola.mn || http://abram.isola.mn/projects/ObjectWeb
-## @license: LGPLv3 (See LICENSE)
+## contact: abram@isola.mn || https://github.com/aisola/ObjectWeb
+## license: LGPLv3
 ## @summary: This document creates several helper functions and framework
 ##           utilities. 
+## maintaier: Abram C. Isola <abram@isola.mn>
+## contrib: Abram C. Isola <abram@isola.mn> (all)
 ################################################################################
 
 ################################################################################
@@ -69,9 +69,25 @@ def autoassign(self, locals):
 ################################################################################
 # Unicode CGI Handler
 ################################################################################
+
 class UnicodeCGIHandler(CGIHandler):
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
     _write = sys.stdout.write
+
+################################################################################
+# Attribute Helper Class
+################################################################################
+
+class AttributeList(dict):
+    
+    def copy(self):
+        return AttributeList(self)
+            
+    def __str__(self):
+        return " ".join(['%s="%s"' % (k, v) for k, v in self.items()])
+        
+    def __repr__(self):
+        return '<attrs: %s>' % repr(str(self))
 
 ################################################################################
 # ObjectWeb Helper Functions
@@ -189,30 +205,20 @@ def getvar(varname, default=None):
 
 request_var = getvar
 
-def getvars(*args):
+def getvars(**kwargs):
     """
         Returns the given HTTP parameter.
         
-        @param *args: *tuple* The (name, default) pairs of the HTTP parameters 
-        that should be returned.
+        @param **kwargs: *kwargs* The "name = default" pairs of the HTTP 
+        parameters that should be returned.
         
-        @return: The list of values of the HTTP parameter OR if provided, the 
-        value of default OR if default is not provided, None.
+        @return: The list of values of the HTTP parameter OR the value of 
+        default.
     """
     # Get the params
     http_params = []
-    for paramgrp in args:
-        http_params.append(getvar(paramgrp[0], paramgrp[1] or None))
+    for key, val in kwargs:
+        http_params.append(getvar(key, val))
 
     # return params
     return http_params
-
-def getallvars():
-    def dictify(fs): 
-        # hack to make web.input work with enctype='text/plain.
-        if fs.list is None:
-            fs.list = [] 
-
-        return dict([(k, fs[k]) for k in fs.keys()])
-
-    return dictify(context["requestvars"])
