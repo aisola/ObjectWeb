@@ -3,7 +3,7 @@
 ## contact: abram@isola.mn || https://github.com/aisola/ObjectWeb
 ## license: LGPLv3
 ## summary: This document initializes the ObjectWeb Framework for use.
-## maintaier: Abram C. Isola <abram@isola.mn>
+## maintainer: Abram C. Isola <abram@isola.mn>
 ## contrib: Abram C. Isola <abram@isola.mn> (all)
 ################################################################################
 

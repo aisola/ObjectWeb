@@ -4,7 +4,7 @@
 ## license: LGPLv3
 ## @summary: This document creates the Response Objects that are used to 
 ##           identify the status.
-## maintaier: Abram C. Isola <abram@isola.mn>
+## maintainer: Abram C. Isola <abram@isola.mn>
 ## contrib: Abram C. Isola <abram@isola.mn> (all)
 ################################################################################
 

@@ -4,13 +4,8 @@
 ## license: LGPLv3
 ## @summary: This document creates a standard, easy interface for form
 ##           processing.
-## maintaier: Abram C. Isola <abram@isola.mn>
+## maintainer: Abram C. Isola <abram@isola.mn>
 ## contrib: Abram C. Isola <abram@isola.mn> (all)
-################################################################################
-
-
-################################################################################
-# Import Standard Libraries
 ################################################################################
 
 
@@ -31,6 +26,12 @@ class Form(object):
         self.formid = kwargs.pop("formid", None)
         self.error = None
         self.valid = True
+
+    def __getattr__(self, name):
+        for field in self.fields:
+            if field.name == name:
+                return field
+        raise AttributeError, name
     
     def render(self):
         if self.formid:
@@ -273,8 +274,6 @@ class Button(Field):
 
     def render(self):
         attrs = self.attrs.copy()
-        
-        del attrs['name']
         
         if self.value is not None:
             attrs['value'] = self.value

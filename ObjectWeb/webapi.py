@@ -4,7 +4,7 @@
 ## license: LGPLv3
 ## @summary: This document creates several helper functions and framework
 ##           utilities. 
-## maintaier: Abram C. Isola <abram@isola.mn>
+## maintainer: Abram C. Isola <abram@isola.mn>
 ## contrib: Abram C. Isola <abram@isola.mn> (all)
 ################################################################################
 
