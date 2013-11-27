@@ -8,12 +8,15 @@ supports the CGI and WSGI standards and has a built-in development server.
 
 The ObjectWeb Framework has only been tested and developed with Python 2.7.
 
+**ObjectWeb is BETA SOFTWARE and should be treated as such. Please use with caution and care.**
+Make sure to read the LICENSE.
+
 ### Features
 
-+ There is currently no reliance on third party libraries.
++ Pure Python 2.6/2.7 with reliance on third party libraries.
 + Map your URLS to request paths using regular expressions.
 + Easily extract information from the request.
-+ **Experimental** form processing and validation module.
++ **Experimental**: Form API - form processing and validation module.
 
 ### Known Issues
 
@@ -49,3 +52,22 @@ General Usage of the ObjectWeb library is as follows.
     git clone https://github.com/aisola/ObjectWeb.git
     cd ObjectWeb
     sudo python setup.py install    
+
+### Legal
+	
+    ObjectWeb Python Web Framework
+    Copyright (C) 2013, Abram C. Isola.
+
+    This library is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as 
+    published by the Free Software Foundation, either version 3 of the 
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+	
+    You should have received a copy of the GNU Lesser General Public 
+    License along with this library.  If not, see 
+    <http://www.gnu.org/licenses/>.

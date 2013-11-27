@@ -4,7 +4,7 @@ import sys
 sys.path.append("../../")
 
 import ObjectWeb
-from ObjectWeb.exper import forms
+from ObjectWeb import forms
 
 import blogrec # import blog resources
 

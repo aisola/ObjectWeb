@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import ObjectWeb
-import ObjectWeb.exper.forms as forms
+import ObjectWeb.forms as forms
 
 def passmatch(form):
     return form.password.get_value() == form.password2.get_value()

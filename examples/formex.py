@@ -1,5 +1,5 @@
 import ObjectWeb
-import ObjectWeb.exper.form as forms
+import ObjectWeb.form as forms
 
 myform = forms.Form(
     forms.Textbox("username",label="Username"),
