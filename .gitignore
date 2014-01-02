@@ -1,4 +1,4 @@
 *.nja
 *.pyc
 *.pyo
-./build
+build/
