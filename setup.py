@@ -4,18 +4,18 @@
 ## license: LGPLv3
 ## summary: This document serves as a setup/install file for the ObjectWeb 
 ##           Framework.
-## maintaier: Abram C. Isola <abram@isola.mn>
+## maintainer: Abram C. Isola <abram@isola.mn>
 ## contrib: Abram C. Isola <abram@isola.mn> (all)
 ################################################################################
 from distutils.core import setup
 
 setup(
     name='ObjectWeb',
-    version="1.5.2r2 (Beta)",
+    version="2.0 (Beta)",
     author='Abram C. Isola',
     author_email='abram@isola.mn',
-    packages=['ObjectWeb',"ObjectWeb.exper"],
-    url='http://abram.isola.mn/projects/ObjectWeb',
+    packages=['ObjectWeb'],
+    url='https://github.com/aisola/ObjectWeb',
     description='A pure-Python standalone Web Framework for WSGI and CGI.',
     classifiers = [
         'Development Status :: 4 - Beta',

@@ -19,7 +19,7 @@ class MainPage(object):
             return "FAILED"
         else:
             print frm.username.get_value(), frm.password.get_value()
-            return frm.username.get_value() + " " + frm.password.get_value()
+            return str(frm.username) + " " + str(frm.password.get_value())
         
 
 ObjectWeb.Application({

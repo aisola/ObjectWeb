@@ -14,7 +14,6 @@
 import os
 import re
 import cgi
-import cgitb
 
 from wsgiref.simple_server import make_server
 #from wsgiref.handlers import CGIHandler
@@ -23,10 +22,10 @@ from wsgiref.simple_server import make_server
 # Import ObjectWeb
 ################################################################################
 import webapi
-import response
+import debug
 
 ################################################################################
-# ObjectWeb Shitty Documentation
+# ObjectWeb Documentation
 ################################################################################
 """
 ObjectWeb is a fast, minimalist, pure-Python web framework that relies on no 
@@ -87,9 +86,6 @@ class Application(object):
         """
         self.urlmap = urlmap
         self.debug = debug
-        
-        if self.debug == True:
-            cgitb.enable()
     
     def _match(self, rpath):
         """
@@ -143,7 +139,7 @@ class Application(object):
 
             # Otherwise throw an HTTP 405 Method Not Allowed.
             else:
-                webapi.status(response.MethodNotAllowed())
+                webapi.status("405 Method Not Allowed")
                 # Check if the application has defined a 405 page...
                 if "HTTP-405" in self.urlmap:
                     cls = self.urlmap["HTTP-405"]
@@ -155,7 +151,7 @@ class Application(object):
 
         # The HandlerObj is None.
         else:
-            webapi.status(response.NotFound())
+            webapi.status("404 Not Found")
             # Check if the application has defined a 405 page...
             if "HTTP-404" in self.urlmap:
                 cls = self.urlmap["HTTP-404"]
@@ -185,7 +181,7 @@ class Application(object):
 
         # Set the default status.
         webapi.context["status"] = "200 OK"
-        webapi.status(response.OK())
+        webapi.status("200 OK")
 
         # Initiate the headers, output, and environ
         webapi.context["headers"] = []
@@ -255,14 +251,21 @@ class Application(object):
             self._load(env)
 
             # Handle the request & Recieve status + output
-            code, output = self._handle()
+            if self.debug:
+                try:
+                    code, output = self._handle()
+                except:
+                    code = "500 Internal Error"
+                    output = debug.debugerror()
+            else:
+                code, output = self._handle()
 
             # Get headers.
             headers = webapi.getheaders()
 
             # Send Complete WSGI request
             start_response(str(code),headers)
-            return [output]
+            return [str(output)]
 
         # Apply middleware.
         for mid in middleware:

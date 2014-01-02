@@ -26,7 +26,7 @@ context = {}
 config["debug"] = False
 
 ################################################################################
-# _safestr & autoassign functions from web.py
+# _safestr functions from web.py
 ################################################################################
 def _safestr(obj, encoding='utf-8'):
     r"""
@@ -47,24 +47,6 @@ def _safestr(obj, encoding='utf-8'):
         return itertools.imap(_safestr, obj)
     else:
         return str(obj)
-
-def autoassign(self, locals):
-    """
-    Automatically assigns local variables to `self`.
-    
-        >>> self = storage()
-        >>> autoassign(self, dict(a=1, b=2))
-        >>> self
-        <Storage {'a': 1, 'b': 2}>
-    
-    Generally used in `__init__` methods, as in:
-
-        def __init__(self, foo, bar, baz=1): autoassign(self, locals())
-    """
-    for (key, value) in locals.iteritems():
-        if key == 'self': 
-            continue
-        setattr(self, key, value)
 
 ################################################################################
 # Unicode CGI Handler
@@ -110,18 +92,41 @@ def header(field, value):
         
         @return: None
     """
+    if field.lower() == "content-type":
+        value = value + ";charset=utf-8"
     context["headers"].append((field,value))
     
 def status(stat):
     """
         Sets the status to return to the client.
         
-        @param stat: ( *str* | *ObjectWeb.response.** ) The response that will 
-        be returned to the client.
+        @param stat: *str* The response that will be returned to the client.
         
         @return: None
     """
     context["status"] = str(stat)
+
+def redirect(location):
+    """
+        Sets the status to return to the client as 301 Moved Permanently.
+        
+        @param location: *str* The location to redirect to.
+        
+        @return: None
+    """
+    status("301 Moved Permanently")
+    header("Location",location)
+
+def seeother(location):
+    """
+        Sets the status to return to the client as 303 See Other.
+        
+        @param location: *str* The location to redirect to.
+        
+        @return: None
+    """
+    status("303 See Other")
+    header("Location", location)
 
 def setcookie(name, value, expires='', domain=None,
               secure=False, httponly=False, path=None):
@@ -186,9 +191,17 @@ def cookies():
         
         @return: List of Cookies or None if none exist.
     """
-    return context["environ"].get("HTTP_COOKIE", None)
+    cookies = context["environ"].get("HTTP_COOKIE", None)
+    if cookies:
+        cookies = cookies.split(";")
+        cookies_list = []
+        for cookie in cookies:
+            cookies_list.append(cookie.strip().split("="))
+        return dict(cookies_list)
+    else:
+        return None
 
-def getvar(varname, default=None):
+def get(varname, default=None):
     """
         Returns the given HTTP parameter.
 
@@ -201,11 +214,14 @@ def getvar(varname, default=None):
         @return: The value of the HTTP parameter OR if provided, the value of 
         default OR if default is not provided, None.
     """
-    return context["requestvars"].getfirst(varname, default=default)
+    cookies = context["environ"].get("HTTP_COOKIE", None)
+    cookies = cookies.split(";")
+    cookies_list = []
+    for cookie in cookies:
+        cookies_list.append(cookie.strip().split("="))
+        return cookies_list
 
-request_var = getvar
-
-def getvars(**kwargs):
+def getall(**kwargs):
     """
         Returns the given HTTP parameter.
         
@@ -218,7 +234,7 @@ def getvars(**kwargs):
     # Get the params
     http_params = []
     for key, val in kwargs:
-        http_params.append(getvar(key, val))
+        http_params.append(get(key, val))
 
     # return params
     return http_params

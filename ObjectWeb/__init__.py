@@ -12,11 +12,11 @@
 ################################################################################
 from application import *
 from webapi import *
-from response import *
+#from forms import *
 
 ################################################################################
 # Meta Information
 ################################################################################
 __author__ = ["See CONTRIB"]
-__version__ = "1.5.2 (Beta)"
+__version__ = "2.0 (Beta)"
 __url__ = "http://gihub.com/aisola/ObjectWeb"

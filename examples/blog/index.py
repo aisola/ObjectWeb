@@ -21,7 +21,7 @@ NewPostForm = forms.Form(
 class MainPage(object):
     
     def GET(self):
-        ObjectWeb.header("Content-Type","text/html;charset=utf-8")
+        ObjectWeb.header("Content-Type","text/html")
         
         posts = blogrec.get_posts()
 
@@ -40,19 +40,19 @@ class MainPage(object):
 class NewPage(object):
     
     def GET(self):
-        ObjectWeb.header("Content-Type","text/html;charset=utf-8")
+        ObjectWeb.header("Content-Type","text/html")
         
         form = NewPostForm()
         return blogrec.display(form.render())
 
     def POST(self):
-        ObjectWeb.header("Content-Type","text/html;charset=utf-8")
+        ObjectWeb.header("Content-Type","text/html")
         form = NewPostForm()
         
         if form.validates():
-            blogrec.set_post(blogrec.BlogPost(form.title.get_value(),
-                                            form.content.get_value()))
-            ObjectWeb.status(ObjectWeb.SeeOther("/"))
+            blogrec.set_post(blogrec.BlogPost(str(form.title),
+                                            str(form.content)))
+            ObjectWeb.seeother("/")
             return ""
         else:
             return blogrec.display(form.render())

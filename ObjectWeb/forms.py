@@ -17,7 +17,7 @@ import copy
 ################################################################################
 # Import ObjectWeb
 ################################################################################
-import ObjectWeb.webapi as webapi
+import webapi
 
 ################################################################################
 # Form Class
@@ -33,7 +33,7 @@ class Form(object):
         """
             *THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
             
-            Initializes the Application Object.
+            Initializes the Form Object.
             
             @param *fields: Turns to be a list of Field Objects that define the
             fields.
@@ -129,6 +129,8 @@ class Form(object):
                 return False
         return True
 
+
+
 ################################################################################
 # Field Class
 ################################################################################
@@ -156,11 +158,68 @@ class Field(object):
         self.label = self.attrs.pop("label", self.name)
         self.value = self.attrs.pop("value", None)
         self.id = self.attrs.pop("id", self.default_id())
-
+        
         if "class_" in self.attrs:
             self.attrs["class"] = self.attrs["class_"]
             del self.attrs["class_"]
             del attrs["class_"]
+
+    def __lt__(self, field):
+        if not self.get_type() < field.get_type():
+            raise TypeError, "Fields must be same type."
+        
+        if self.get_value() == field.get_value():
+            return True
+        else:
+            return False
+
+    def __le__(self, field):
+        if not self.get_type() <= field.get_type():
+            raise TypeError, "Fields must be same type."
+        
+        if self.get_value() != field.get_value():
+            return True
+        else:
+            return False
+
+    def __eq__(self, field):
+        if not self.get_type() == field.get_type():
+            raise TypeError, "Fields must be same type."
+        
+        if self.get_value() == field.get_value():
+            return True
+        else:
+            return False
+
+    def __ne__(self, field):
+        if not self.get_type() == field.get_type():
+            raise TypeError, "Fields must be same type."
+        
+        if self.get_value() != field.get_value():
+            return True
+        else:
+            return False
+
+    def __gt__(self, field):
+        if not self.get_type() > field.get_type():
+            raise TypeError, "Fields must be same type."
+        
+        if self.get_value() == field.get_value():
+            return True
+        else:
+            return False
+
+    def __ge__(self, field):
+        if not self.get_type() >= field.get_type():
+            raise TypeError, "Fields must be same type."
+        
+        if self.get_value() != field.get_value():
+            return True
+        else:
+            return False
+
+    def __str__(self):
+        return str(self.get_value())
 
     def default_id(self):
         """
@@ -216,6 +275,8 @@ class Field(object):
 
         return '<input %s />' % attrs
 
+
+
 ################################################################################
 # Simple Field Subclasses
 ################################################################################
@@ -246,6 +307,8 @@ class Hidden(Field):
     def get_type(self):
         """Defines the type of field."""
         return 'hidden'
+
+
 
 ################################################################################
 # Slightly-Less-Simple Field Subclasses
@@ -415,6 +478,8 @@ class Submit(Button):
     def get_type(self):
         """Defines the Field type."""
         return "submit"
+
+
 
 ################################################################################
 # Validator

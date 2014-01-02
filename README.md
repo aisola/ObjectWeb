@@ -14,14 +14,13 @@ Make sure to read the LICENSE.
 ### Features
 
 + Pure Python 2.6/2.7 with reliance on third party libraries.
++ Supports CGI and WSGI standards.
++ A nice debug feature to help with 500 Internal Errors.
++ Allows the use of external libraries without interfering.
 + Map your URLS to request paths using regular expressions.
 + Easily extract information from the request.
-+ **Experimental**: Form API - form processing and validation module.
-
-### Known Issues
-
-1. The debug operation does **not** work **at all**..,
-2. There is no real documentation... Yet.
++ Form API - form processing and validation module.
++ Built-in **development** server.
 
 ### Documentation
 Documentation is currently being developed for ObjectWeb. However there are 
@@ -54,7 +53,9 @@ General Usage of the ObjectWeb library is as follows.
     sudo python setup.py install    
 
 ### Legal
-	
+
+Object Web is licensed under the GNU Lesser General Public License v3.
+    
     ObjectWeb Python Web Framework
     Copyright (C) 2013, Abram C. Isola.
 
