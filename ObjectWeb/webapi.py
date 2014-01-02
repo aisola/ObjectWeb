@@ -214,12 +214,7 @@ def get(varname, default=None):
         @return: The value of the HTTP parameter OR if provided, the value of 
         default OR if default is not provided, None.
     """
-    cookies = context["environ"].get("HTTP_COOKIE", None)
-    cookies = cookies.split(";")
-    cookies_list = []
-    for cookie in cookies:
-        cookies_list.append(cookie.strip().split("="))
-        return cookies_list
+    return context["requestvars"].getfirst(varname, default=default)
 
 def getall(**kwargs):
     """
