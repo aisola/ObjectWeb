@@ -1,10 +1,20 @@
+#!/usr/bin/python
+################################################################################
+## contact: abram@isola.mn || https://github.com/aisola/ObjectWeb
+## license: LGPLv3
+## summary: This document displays the exact markup for a simple form in
+##          plain text.
+## maintainer: Abram C. Isola <abram@isola.mn>
+## contrib: Abram C. Isola <abram@isola.mn> (all)
+################################################################################
 import ObjectWeb
-import ObjectWeb.form as forms
+import ObjectWeb.forms as forms
 
 myform = forms.Form(
     forms.Textbox("username",label="Username"),
     forms.Password("password",label="Password"),
-    forms.Button("login",value="Login",type="submit")
+
+    forms.Submit("login",value="Login")
 )
 
 class MainPage(object):
@@ -13,13 +23,7 @@ class MainPage(object):
         frm = myform()
         return frm.render()
 
-    def POST(self):
-        frm = myform()
-        if not frm.validates():
-            return "FAILED"
-        else:
-            print frm.username.get_value(), frm.password.get_value()
-            return str(frm.username) + " " + str(frm.password.get_value())
+    POST = GET
         
 
 ObjectWeb.Application({

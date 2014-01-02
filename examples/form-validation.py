@@ -1,11 +1,18 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
+################################################################################
+## contact: abram@isola.mn || https://github.com/aisola/ObjectWeb
+## license: LGPLv3
+## summary: This document displays an example form with working validation.
+## maintainer: Abram C. Isola <abram@isola.mn>
+## contrib: Abram C. Isola <abram@isola.mn> (all)
+################################################################################
 import ObjectWeb
 import ObjectWeb.forms as forms
 
 import re
 
 def valid_email(form):
-    if re.match(r"^[a-zA-Z0-9._%-+]+@[a-zA-Z0-9._%-]+.[a-zA-Z]{2,6}$", form.email) != None:
+    if re.match(r"^[a-zA-Z0-9._%-+]+@[a-zA-Z0-9._%-]+.[a-zA-Z]{2,6}$", str(form.email)) != None:
       return True # this is an email.
     else:
       return False # this is not an email.
@@ -19,7 +26,7 @@ myform = forms.Form(
     forms.Password("password",label="Password"),
     forms.Password("password2",label="Confirm Password"),
     
-    forms.Button("login",value="Login",type="submit"),
+    forms.Submit("login",value="Login"),
     validators = [
         forms.Validator("Email must be a valid email", valid_email),
         forms.Validator("Passwords must match.", passmatch)
@@ -38,10 +45,10 @@ class MainPage(object):
         ObjectWeb.header("Content-Type","text/html")
         frm = myform()
         if not frm.validates():
-            return "FAILED: " + str(frm.password) + " " + str(frm.password2)
+            return "FAILED"
         else:
-            return str(frm.username) + " " + str(frm.password)
+            return str(frm.email) + " " + str(frm.password)
 
 ObjectWeb.Application({
     "/": MainPage,
-}).run(port=8080)
+}, debug=True).run(port=8080)

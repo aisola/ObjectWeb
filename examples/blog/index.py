@@ -1,4 +1,12 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
+################################################################################
+## contact: abram@isola.mn || https://github.com/aisola/ObjectWeb
+## license: LGPLv3
+## summary: This document creates a VERY simple blogging software implementation
+##          in ObjectWeb. This is NOT for production use.
+## maintainer: Abram C. Isola <abram@isola.mn>
+## contrib: Abram C. Isola <abram@isola.mn> (all)
+################################################################################
 
 import sys
 sys.path.append("../../")

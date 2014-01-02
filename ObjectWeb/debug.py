@@ -266,7 +266,7 @@ def debugerror():
     
     if webapi.context["output"] or webapi.context["headers"]:
         out = out + """<h2>Response so far</h2> <h3>HEADERS</h3>"""
-        out = out + dicttable_items(dict(webapi.context["headers"]))
+        out = out + dicttable(dict(webapi.getheaders()))
         out = out + '<h3>BODY</h3><p class="req" style="padding-bottom: 2em"><code>'
         out = out + str(escape(webapi.context["output"])) + "</code></p>"
       

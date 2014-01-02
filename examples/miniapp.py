@@ -1,4 +1,11 @@
-#!/usr/bin/python -O 
+#!/usr/bin/python
+################################################################################
+## contact: abram@isola.mn || https://github.com/aisola/ObjectWeb
+## license: LGPLv3
+## summary: This displays an example of the basic features for ObjectWeb.
+## maintainer: Abram C. Isola <abram@isola.mn>
+## contrib: Abram C. Isola <abram@isola.mn> (all)
+################################################################################
 import ObjectWeb
 
 class MainPage(object):
@@ -17,7 +24,7 @@ class NamePage(object):
         age = ObjectWeb.get("age", None)
         
         if age:
-            return "Hello "+str(name)+", you are "+str(age[0])+" years old."
+            return "Hello "+str(name)+", you are "+str(age)+" years old."
         else:
             return "Hello "+str(name)+"!"
 

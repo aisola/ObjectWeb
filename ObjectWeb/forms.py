@@ -81,9 +81,9 @@ class Form(object):
             @return: Form HTML.
         """
         if self.formid:
-            formout = '<form id="%s" method="POST" enctype="multipart/formdata">' % (self.formid,)
+            formout = '<form id="%s" method="POST" enctype="application/x-www-form-urlencoded">' % (self.formid,)
         else:
-            formout = '<form method="POST" enctype="multipart/formdata">'
+            formout = '<form method="POST" enctype="application/x-www-form-urlencoded">'
         
         if self.error:
             formout += '<div class="form-error">%s</div>'
@@ -116,7 +116,7 @@ class Form(object):
             if source:
                 fieldval = source.get(field.name)
             else:
-                fieldval = webapi.getvar(field.name)
+                fieldval = webapi.get(field.name)
             field.set_value(fieldval)
 
         self.valid = self.valid and self._validate()

@@ -1,4 +1,11 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
+################################################################################
+## contact: abram@isola.mn || https://github.com/aisola/ObjectWeb
+## license: LGPLv3
+## summary: Non-ObjectWeb resources for the blog. Enjoy.
+## maintainer: Abram C. Isola <abram@isola.mn>
+## contrib: Abram C. Isola <abram@isola.mn> (all)
+################################################################################
 
 import time
 import pickle
@@ -19,7 +26,8 @@ def display(content):
     """ + str(content) + """
                 </div>
                 <footer>
-                    This "Blog Software" is completely GPLv3.
+                    This "Blog Software" is completely GPLv3 and not recommended 
+                    for production use.
                 </footer>
             </body>
         </html>
