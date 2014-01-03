@@ -12,9 +12,8 @@ The ObjectWeb Framework has only been tested and developed with Python 2.7.
 Make sure to read the LICENSE.
 
 ### Features
-
 + Pure Python 2.6/2.7 with reliance on third party libraries.
-+ Supports CGI and WSGI standards.
++ Supports CGI and WSGI standards. (&& Google App Engine... Maybe.)
 + A nice debug feature to help with 500 Internal Errors.
 + Allows the use of external libraries without interfering.
 + Map your URLS to request paths using regular expressions.

@@ -6,6 +6,7 @@ Version 2.0 (Beta)
 - There are so many changes to the existing framework, including loss of 
   backwards compatibility. This caused the change of the major version number.
 - **Finally** made the debug feature work.
+- Should work in Google App Engine now! (??)
 - Added special methods for comparison the Form class.
 - Removed ObjectWeb.response because it seemed to be unneccesarily tedious and 
   I favored using strings to identify return statuses.

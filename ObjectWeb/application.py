@@ -13,6 +13,7 @@
 ################################################################################
 import os
 import re
+import sys
 import cgi
 
 from wsgiref.simple_server import make_server
@@ -273,6 +274,29 @@ class Application(object):
 
         # Return function
         return wsgi
+
+    def getgoogleapp(self, *middleware):
+        wsgiapp = self.getwsgi(*middleware)
+        try:
+            # check what version of python is running
+            version = sys.version_info[:2]
+            major   = version[0]
+            minor   = version[1]
+
+            if major != 2:
+                raise EnvironmentError("Google App Engine only supports python 2.5 and 2.7")
+
+            # if 2.7, return a function that can be run by gae
+            if minor == 7:
+                return wsgiapp
+            # if 2.5, use run_wsgi_app
+            elif minor == 5:
+                from google.appengine.ext.webapp.util import run_wsgi_app
+                return run_wsgi_app(wsgiapp)
+            else:
+                raise EnvironmentError("Not a supported platform, use python 2.5 or 2.7")
+        except ImportError:
+            return self.getcgi(*middleware)
     
     def getcgi(self,*middleware):
         """
