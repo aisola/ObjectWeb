@@ -50,7 +50,7 @@ General Usage of the ObjectWeb library is as follows.
 ### Installation
     git clone https://github.com/aisola/ObjectWeb.git
     cd ObjectWeb
-    sudo python setup.py install    
+    sudo python setup.py install
 
 ### Legal
 
@@ -65,8 +65,8 @@ Object Web is licensed under the GNU Lesser General Public License v3.
     License, or (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
     GNU Lesser General Public License for more details.
 	
     You should have received a copy of the GNU Lesser General Public 

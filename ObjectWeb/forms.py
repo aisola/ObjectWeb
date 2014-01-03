@@ -44,7 +44,7 @@ class Form(object):
         """
         self.fields = fields
         self.validators = kwargs.pop("validators", [])
-        self.formid = kwargs.pop("formid", None)
+        self.formid = kwargs.pop("id", None)
         self.error = None
         self.valid = True
 

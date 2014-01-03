@@ -18,12 +18,9 @@ import itertools
 import sys, codecs
 from wsgiref.handlers import CGIHandler
 
-# Create the Application config and context
-global config, context
-config = {}
+# Create the Application context
+global context
 context = {}
-
-config["debug"] = False
 
 ################################################################################
 # _safestr functions from web.py
