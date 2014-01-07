@@ -11,6 +11,8 @@ The ObjectWeb Framework has only been tested and developed with Python 2.7.
 **ObjectWeb is BETA SOFTWARE and should be treated as such. Please use with caution and care.**
 Make sure to read the LICENSE.
 
+[![Build Status](https://travis-ci.org/aisola/ObjectWeb.png?branch=master)](https://travis-ci.org/aisola/ObjectWeb)
+
 ### Features
 + Pure Python 2.6/2.7 with reliance on third party libraries.
 + Supports CGI and WSGI standards. (&& Google App Engine... Maybe.)
