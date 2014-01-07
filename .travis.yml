@@ -2,3 +2,7 @@ language: python
 python:
   - "2.6"
   - "2.7"
+install: sudo pip install requests
+script: python test/test-req.py
+before-script:
+  - sudo python test/test-server.py &
