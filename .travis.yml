@@ -2,7 +2,7 @@ language: python
 python:
   - "2.6"
   - "2.7"
-install: git clone git://github.com/kennethreitz/requests.git; python requests/setup.py install;
+install: git clone git://github.com/kennethreitz/requests.git; cd requests; python requests/setup.py install; cd ..
 script: python test/test-req.py
 before-script:
   - sudo python test/test-server.py &
