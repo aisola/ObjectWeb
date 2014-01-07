@@ -2,7 +2,10 @@ language: python
 python:
   - "2.6"
   - "2.7"
-install: pip install requests
-script: python setup.py develop && python test/test-req.py
+install: python setup.py install; cd ..
+script: python test/test-req.py
 before-script:
   - sudo python test/test-server.py &
+before-install:
+  - git clone git://github.com/kennethreitz/requests.git
+  - cd requests
