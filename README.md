@@ -39,7 +39,7 @@ General Usage of the ObjectWeb library is as follows.
     import ObjectWeb  # import the library.
 
     class MainPage(object): # Any object can be a handler
-        "The main page hadler."
+        "The main page handler."
 
         def GET(self):
             "The GET method handler."
@@ -49,7 +49,7 @@ General Usage of the ObjectWeb library is as follows.
         POST = GET
         
     # Create the Application Object.
-    app = ObjectWeb.Appliation({
+    app = ObjectWeb.Application({
         "/": MainPage,              # Point the / path to be handled by MainPage
     }, debug=False)                 # Set debug to False for production.
 
