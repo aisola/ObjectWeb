@@ -86,7 +86,7 @@ class Form(object):
             formout = '<form method="POST" enctype="application/x-www-form-urlencoded">'
         
         if self.error:
-            formout += '<div class="form-error">%s</div>'
+            formout += '<div class="form-error">%s</div>' % self.error
 
         for field in self.fields:
             formout += '<div class="form-element">'
