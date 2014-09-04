@@ -102,13 +102,25 @@ class Application(object):
             OR None if there was no match.
         """
         # Check each pattern key against the request path.
-        for pat, what in self.urlmap.iteritems():
-            result = re.compile("^" + str(pat) + "$").match(str(rpath))
+        if type(self.urlmap) == type({}):
+            for pat, what in self.urlmap.iteritems():
+                result = re.compile("^" + str(pat) + "$").match(str(rpath))
 
-            # If there is a result, then we've matched a handler.
-            # Return the handler object and the prettyurl arguments.
-            if result:
-                return what, [x for x in result.groups()]
+                # If there is a result, then we've matched a handler.
+                # Return the handler object and the prettyurl arguments.
+                if result:
+                    return what, [x for x in result.groups()]
+
+        elif type(self.urlmap) == type(()) or type(self.urlmap) == type([]):
+            for patwhat in self.urlmap:
+                pat    = patwhat[0]
+                what   = patwhat[1]
+                result = re.compile("^" + str(pat) + "$").match(str(rpath))
+
+                # If there is a result, then we've matched a handler.
+                # Return the handler object and the prettyurl arguments.
+                if result:
+                    return what, [x for x in result.groups()]
 
         # No match, return None.
         return None
