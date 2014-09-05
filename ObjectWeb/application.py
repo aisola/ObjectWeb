@@ -144,10 +144,16 @@ class Application(object):
             HandlerInst = HandlerObj[0]()
             args = HandlerObj[1]
 
-            # If the HandlerObj has the method function available.
-            if hasattr(HandlerInst, webapi.context["method"]):
+            # If the HandlerObj has the method function available. (upper)
+            if hasattr(HandlerInst, webapi.context["method"].upper()):
                 # Run the method, passing in the arguments. Capture the output.
-                method_func = getattr(HandlerInst,webapi.context["method"])
+                method_func = getattr(HandlerInst,webapi.context["method"].upper())
+                webapi.context["output"] = method_func(*args)
+
+            # If the HandlerObj has the method function available. (lower)
+            elif hasattr(HandlerInst, webapi.context["method"].lower()):
+                # Run the method, passing in the arguments. Capture the output.
+                method_func = getattr(HandlerInst,webapi.context["method"].lower())
                 webapi.context["output"] = method_func(*args)
 
             # Otherwise throw an HTTP 405 Method Not Allowed.
