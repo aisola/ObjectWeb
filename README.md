@@ -49,9 +49,9 @@ General Usage of the ObjectWeb library is as follows.
         POST = GET
         
     # Create the Application Object.
-    app = ObjectWeb.Application({
-        "/": MainPage,              # Point the / path to be handled by MainPage
-    }, debug=False)                 # Set debug to False for production.
+    app = ObjectWeb.Application([
+        ("/", MainPage),              # Point the / path to be handled by MainPage
+    ], debug=False)                   # Set debug to False for production.
 
 ### Installation
     git clone https://github.com/aisola/ObjectWeb.git
