@@ -23,16 +23,6 @@ Make sure to read the LICENSE.
 + Form API - form processing and validation module.
 + Built-in **development** server.
 
-### Documentation
-Documentation is ready! I must admit it is pretty terrible documentation, but it 
-does the trick for most Python developers. As always contact me if you have 
-suggestions for the documentation *OR* better yet, how about contributing to the 
-documentation!
-
-The documentation, for development purposes is not included in the library itself.
-
-Get the documentation from [ObjectWebDocs](https://github.com/aisola/ObjectWebDocs)
-
 ### ObjectWeb in a Nutshell
 General Usage of the ObjectWeb library is as follows.
 
