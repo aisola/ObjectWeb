@@ -102,13 +102,25 @@ class Application(object):
             OR None if there was no match.
         """
         # Check each pattern key against the request path.
-        for pat, what in self.urlmap.iteritems():
-            result = re.compile("^" + str(pat) + "$").match(str(rpath))
+        if type(self.urlmap) == type({}):
+            for pat, what in self.urlmap.iteritems():
+                result = re.compile("^" + str(pat) + "$").match(str(rpath))
 
-            # If there is a result, then we've matched a handler.
-            # Return the handler object and the prettyurl arguments.
-            if result:
-                return what, [x for x in result.groups()]
+                # If there is a result, then we've matched a handler.
+                # Return the handler object and the prettyurl arguments.
+                if result:
+                    return what, [x for x in result.groups()]
+
+        elif type(self.urlmap) == type(()) or type(self.urlmap) == type([]):
+            for patwhat in self.urlmap:
+                pat    = patwhat[0]
+                what   = patwhat[1]
+                result = re.compile("^" + str(pat) + "$").match(str(rpath))
+
+                # If there is a result, then we've matched a handler.
+                # Return the handler object and the prettyurl arguments.
+                if result:
+                    return what, [x for x in result.groups()]
 
         # No match, return None.
         return None
@@ -132,10 +144,16 @@ class Application(object):
             HandlerInst = HandlerObj[0]()
             args = HandlerObj[1]
 
-            # If the HandlerObj has the method function available.
-            if hasattr(HandlerInst, webapi.context["method"]):
+            # If the HandlerObj has the method function available. (upper)
+            if hasattr(HandlerInst, webapi.context["method"].upper()):
                 # Run the method, passing in the arguments. Capture the output.
-                method_func = getattr(HandlerInst,webapi.context["method"])
+                method_func = getattr(HandlerInst,webapi.context["method"].upper())
+                webapi.context["output"] = method_func(*args)
+
+            # If the HandlerObj has the method function available. (lower)
+            elif hasattr(HandlerInst, webapi.context["method"].lower()):
+                # Run the method, passing in the arguments. Capture the output.
+                method_func = getattr(HandlerInst,webapi.context["method"].lower())
                 webapi.context["output"] = method_func(*args)
 
             # Otherwise throw an HTTP 405 Method Not Allowed.
