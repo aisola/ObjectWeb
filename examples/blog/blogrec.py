@@ -1,14 +1,15 @@
 #!/usr/bin/python
-################################################################################
+###############################################################################
 ## contact: abram@isola.mn || https://github.com/aisola/ObjectWeb
 ## license: LGPLv3
 ## summary: Non-ObjectWeb resources for the blog. Enjoy.
 ## maintainer: Abram C. Isola <abram@isola.mn>
 ## contrib: Abram C. Isola <abram@isola.mn> (all)
-################################################################################
+###############################################################################
 
 import time
 import pickle
+
 
 def display(content):
     return """
@@ -26,12 +27,13 @@ def display(content):
     """ + str(content) + """
                 </div>
                 <footer>
-                    This "Blog Software" is completely GPLv3 and not recommended 
-                    for production use.
+                    This "Blog Software" is completely GPLv3 and not
+                    recommended for production use.
                 </footer>
             </body>
         </html>
     """
+
 
 class BlogPost(object):
     
@@ -43,7 +45,7 @@ class BlogPost(object):
 
 def get_posts(limit=None):
     try:
-        datfile = open("blog.dat","rb")
+        datfile = open("blog.dat", "rb")
         pickled = datfile.read()
         datfile.close()
         
@@ -56,8 +58,9 @@ def get_posts(limit=None):
     except:
         return None
 
+
 def set_post(postobj):
-    datfile = open("blog.dat","wb+")
+    datfile = open("blog.dat", "wb+")
     try:
         pickled = datfile.read()
         posts = [postobj] + pickle.loads(pickled)
