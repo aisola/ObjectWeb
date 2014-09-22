@@ -1,39 +1,35 @@
 #!/usr/bin/python
-################################################################################
+###############################################################################
 ## contact: abram@isola.mn || https://github.com/aisola/ObjectWeb
 ## license: LGPLv3
 ## @summary: This document creates a standard, easy interface for form
 ##           processing.
 ## maintainer: Abram C. Isola <abram@isola.mn>
 ## contrib: Abram C. Isola <abram@isola.mn> (all)
-################################################################################
+###############################################################################
 
-
-################################################################################
-# Import ObjectWeb
-################################################################################
 import copy
 
-################################################################################
+###############################################################################
 # Import ObjectWeb
-################################################################################
+###############################################################################
+
 import webapi
 
-################################################################################
+
+###############################################################################
 # Form Class
-################################################################################
+###############################################################################
 
 class Form(object):
-    """
-        This should serve as the main interface between the server and client 
+    """This should serve as the main interface between the server and client
         when dealing with HTML Forms and Form Processing.
     """
-    
+
     def __init__(self, *fields, **kwargs):
-        """
-            *THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
+        """*THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
             
-            Initializes the Form Object.
+        Initializes the Form Object.
             
             @param *fields: Turns to be a list of Field Objects that define the
             fields.
@@ -49,21 +45,19 @@ class Form(object):
         self.valid = True
 
     def __call__(self):
-        """
-            *THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
+        """*THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
 
-            Creates an exact copy of the curren Form object. This makes form
-            processessing easier.
+        Creates an exact copy of the curren Form object. This makes form
+        processessing easier.
 
             @return: Form Object.
         """
         return copy.deepcopy(self)
 
     def __getattr__(self, name):
-        """
-            *THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
+        """*THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
 
-            Lets fields to be called as attributes.
+        Lets fields to be called as attributes.
 
             @return: Form Object.
         """
@@ -73,40 +67,42 @@ class Form(object):
             if field.name == name:
                 return field
         raise AttributeError, name
-    
+
     def render(self):
-        """
-            Creates the actual HTML markup for the form.
+        """Creates the actual HTML markup for the form.
 
             @return: Form HTML.
         """
         if self.formid:
-            formout = '<form id="%s" method="POST" enctype="application/x-www-form-urlencoded">' % (self.formid,)
+            formout = '<form id="%s" method="POST" ' \
+                      'enctype="application/x-www-form-urlencoded">' % \
+                      (self.formid,)
         else:
-            formout = '<form method="POST" enctype="application/x-www-form-urlencoded">'
-        
+            formout = '<form method="POST" ' \
+                      'enctype="application/x-www-form-urlencoded">'
+
         if self.error:
             formout += '<div class="form-error">%s</div>' % self.error
 
         for field in self.fields:
             formout += '<div class="form-element">'
-            
+
             if field.show_label():
                 formout += '<div class="form-element-label">'
-                formout += '<label for="%s">%s</label>' % (field.id, field.label)
+                formout += '<label for="%s">%s</label>' % \
+                           (field.id, field.label)
                 formout += '</div>'
-            
-            formout += '<div class="form-element-field">%s</div>' % (field.render(),)
+
+            formout += '<div class="form-element-field">%s</div>' % \
+                       (field.render(),)
 
             formout += '</div><!-- .form-element -->'
 
         formout += '</form>'
         return formout
 
-
     def validates(self, source=None):
-        """
-            Ensures that the form has been given valid input.
+        """Ensures that the form has been given valid input.
 
             @return: BOOL(True|False)
         """
@@ -130,35 +126,31 @@ class Form(object):
         return True
 
 
-
-################################################################################
+###############################################################################
 # Field Class
-################################################################################
+###############################################################################
 
 class Field(object):
-    """
-        *THIS CLASS SHOULD NOT BE INSTANTIATED MANUALLY.*
+    """*THIS CLASS SHOULD NOT BE INSTANTIATED MANUALLY.*
 
-        This is a base class for the Field Objects. This normally should not
-        be called manually as it can error out without information from 
-        subclasses.
+    This is a base class for the Field Objects. This normally should not
+    be called manually as it can error out without information from subclasses.
     """
-    
+
     def __init__(self, name, **attrs):
-        """
-            *THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
-            
-            This instantiates the object.
-            
+        """*THIS METHOD SHOULD NOT BE CALLED MANUALLY.*
+
+        This instantiates the object.
+
             @return: Field Object.
         """
         self.name = name
         self.attrs = webapi.AttributeList(attrs)
-        
+
         self.label = self.attrs.pop("label", self.name)
         self.value = self.attrs.pop("value", None)
         self.id = self.attrs.pop("id", self.default_id())
-        
+
         if "class_" in self.attrs:
             self.attrs["class"] = self.attrs["class_"]
             del self.attrs["class_"]
@@ -167,7 +159,7 @@ class Field(object):
     def __lt__(self, field):
         if not self.get_type() < field.get_type():
             raise TypeError, "Fields must be same type."
-        
+
         if self.get_value() == field.get_value():
             return True
         else:
@@ -176,7 +168,7 @@ class Field(object):
     def __le__(self, field):
         if not self.get_type() <= field.get_type():
             raise TypeError, "Fields must be same type."
-        
+
         if self.get_value() != field.get_value():
             return True
         else:
@@ -185,7 +177,7 @@ class Field(object):
     def __eq__(self, field):
         if not self.get_type() == field.get_type():
             raise TypeError, "Fields must be same type."
-        
+
         if self.get_value() == field.get_value():
             return True
         else:
@@ -194,7 +186,7 @@ class Field(object):
     def __ne__(self, field):
         if not self.get_type() == field.get_type():
             raise TypeError, "Fields must be same type."
-        
+
         if self.get_value() != field.get_value():
             return True
         else:
@@ -203,7 +195,7 @@ class Field(object):
     def __gt__(self, field):
         if not self.get_type() > field.get_type():
             raise TypeError, "Fields must be same type."
-        
+
         if self.get_value() == field.get_value():
             return True
         else:
@@ -212,7 +204,7 @@ class Field(object):
     def __ge__(self, field):
         if not self.get_type() >= field.get_type():
             raise TypeError, "Fields must be same type."
-        
+
         if self.get_value() != field.get_value():
             return True
         else:
@@ -222,118 +214,119 @@ class Field(object):
         return str(self.get_value())
 
     def default_id(self):
-        """
-            Defines the default id.
+        """Defines the default id.
 
             @return: None.
         """
         return self.name
 
     def field_type(self):
-        """
-            Defines the type of field. This must be defined in subclasses.
-        """
+        """Defines the type of field. This must be defined in subclasses."""
         raise NotImplementedError
 
     def show_label(self):
-        """
-            Defines if the HTML label should be displayed.
+        """Defines if the HTML label should be displayed.
 
             @return: BOOL(True|False)
         """
         return True
 
     def set_value(self, value):
-        """
-            Sets the value of the Field.
+        """Sets the value of the Field.
 
             @return: None.
         """
         self.value = value
 
     def get_value(self):
-        """
-            Gets the value of the Field.
+        """Gets the value of the Field.
 
             @return: The value of the field.
         """
         return self.value
 
     def render(self):
-        """
-            Creates the actual HTML markup for the Field.
+        """Creates the actual HTML markup for the Field.
 
             @return: Field HTML.
         """
         attrs = self.attrs.copy()
         attrs["type"] = self.get_type()
-        
+
         if self.value is not None:
             attrs["value"] = self.value
-            
+
         attrs["name"] = self.name
 
         return '<input %s />' % attrs
 
 
-
-################################################################################
+###############################################################################
 # Simple Field Subclasses
-################################################################################
+###############################################################################
+
 class Textbox(Field):
     """The Field subclass that defines a standard HTML Textbox input."""
+
     def get_type(self):
         """Defines the type of field."""
         return 'text'
 
+
 class Password(Field):
     """The Field subclass that defines a standard HTML Password input."""
+
     def get_type(self):
         """Defines the type of field."""
         return 'password'
 
+
 class File(Field):
     """The Field subclass that defines a standard HTML File input."""
+
     def get_type(self):
         """Defines the type of field."""
         return 'file'
 
+
 class Hidden(Field):
     """The Field subclass that defines a standard HTML Hidden input."""
+
     def show_label(self):
         """Hides the HTML Field Label."""
         return False
-        
+
     def get_type(self):
         """Defines the type of field."""
         return 'hidden'
 
 
-
-################################################################################
+###############################################################################
 # Slightly-Less-Simple Field Subclasses
-################################################################################
+###############################################################################
+
 class Textarea(Field):
     """The Field subclass that defines a standard HTML Textarea."""
-    
+
     def render(self):
         """Creates the actual HTML markup for the Field."""
         attrs = self.attrs.copy()
         attrs['name'] = self.name
         return '<textarea %s>%s</textarea>' % (attrs, self.value or '')
 
+
 class Dropdown(Field):
     """The Field subclass that defines a standard HTML Dropdown."""
-    
+
     def __init__(self, name, options, **attrs):
         self.options = options
         super(Dropdown, self).__init__(name, **attrs)
-        
+
     def render(self):
         """Creates the actual HTML markup for the Field."""
         attrs = self.attrs.copy()
         attrs["name"] = self.name
-        
+
         out = '<select %s>' % attrs
 
         for option in self.options:
@@ -349,15 +342,17 @@ class Dropdown(Field):
         else:
             desc, value = option, option
 
-        if self.value == value or (isinstance(self.value, list) and value in self.value):
+        if self.value == value or \
+                (isinstance(self.value, list) and value in self.value):
             select_p = ' selected="selected"'
         else:
             select_p = ''
         return '<option%s value="%s">%s</option>\n' % (select_p, value, desc)
 
+
 class GroupedDropdown(Dropdown):
     """The Field subclass that defines a standard HTML Dropdown with Groups."""
-    
+
     def __init__(self, name, options, **attrs):
         self.options = options
         super(GroupedDropdown, self).__init__(self, name, **attrs)
@@ -366,21 +361,22 @@ class GroupedDropdown(Dropdown):
         """Creates the actual HTML markup for the Field."""
         attrs = self.attrs.copy()
         attrs['name'] = self.name
-        
+
         out = '<select %s>' % attrs
-        
+
         for label, options in self.options:
             out += '<optgroup label="%s">' % label
             for option in options:
                 out += self.render_option(option)
-            out +=  '</optgroup>'
-            
+            out += '</optgroup>'
+
         out += '</select>'
         return out
 
+
 class Radio(Field):
     """The Field subclass that defines a standard HTML Radio Switch."""
-    
+
     def __init__(self, name, options, **attrs):
         super(Radio, self).__init__(name, **attrs)
 
@@ -406,13 +402,14 @@ class Radio(Field):
                 attrs['checked'] = 'checked'
 
             out += '<input %s/> %s' % (attrs, desc)
-            
+
         out += '</span>'
         return out
-        
+
+
 class Checkbox(Field):
     """The Field subclass that defines a standard HTML Checkbox."""
-    
+
     def __init__(self, name, **attrs):
         self.checked = attrs.pop("checked", False)
         super(Checkbox, self).__init__(name, **attrs)
@@ -425,7 +422,7 @@ class Checkbox(Field):
     def get_type(self):
         """Defines the type of field."""
         return "checkbox"
-    
+
     def set_value(self, value):
         """Sets the Field value."""
         self.checked = bool(value)
@@ -442,12 +439,13 @@ class Checkbox(Field):
         attrs['value'] = self.value
 
         if self.checked:
-            attrs['checked'] = 'checked'            
+            attrs['checked'] = 'checked'
         return '<input %s/>' % attrs
+
 
 class Button(Field):
     """The Field subclass that defines a standard HTML Button."""
-    
+
     def __init__(self, name, **attrs):
         super(Button, self).__init__(name, **attrs)
 
@@ -463,15 +461,16 @@ class Button(Field):
         """Creates the actual HTML markup for the Field."""
         attrs = self.attrs.copy()
         attrs["type"] = self.get_type()
-        
+
         if self.value is not None:
             attrs['value'] = self.label or self.name
 
         return "<input %s />" % attrs
 
+
 class Submit(Button):
     """The Field subclass that defines a standard HTML Submit Button."""
-    
+
     def __init__(self, name, **attrs):
         super(Submit, self).__init__(name, **attrs)
 
@@ -480,33 +479,26 @@ class Submit(Button):
         return "submit"
 
 
-
-################################################################################
+###############################################################################
 # Validator
-################################################################################
+###############################################################################
 
 class Validator(object):
-    """
-        This class defines the validation rules for the form.
-    """
-    
+    """This class defines the validation rules for the form."""
+
     def __deepcopy__(self, memo):
-        """
-            Deepcopy needs this.
-        """
+        """Deepcopy needs this."""
         return copy.copy(self)
-    
+
     def __init__(self, message, booltest):
-        """
-            Instantiates the object. This sets the messages of failure and the 
-            test.
+        """Instantiates the object. This sets the messages of failure and the
+        test.
         """
         self.message = message
         self.booltest = booltest
 
     def valid(self, form):
-        """
-            This runs the test and determines if the rule is true or false.
+        """This runs the test and determines if the rule is true or false.
 
             @param form: *Form* This is a form object that is automatically 
             passed into the function by Form.validates.
