@@ -38,7 +38,8 @@ var darr = String.fromCharCode(0x25bc);s.innerHTML = s.innerHTML == uarr ? darr 
 """
 
 error_template_start = """
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -81,36 +82,43 @@ def _get_lines_from_file(filename, lineno, context_lines):
 
         pre_context = [line.strip('\n') for line in source[lower_bound:lineno]]
         context_line = source[lineno].strip('\n')
-        post_context = [line.strip('\n') for line in source[lineno + 1:upper_bound]]
+        post_context = [line.strip('\n')
+                        for line in source[lineno + 1:upper_bound]]
 
         return lower_bound, pre_context, context_line, post_context
     except (OSError, IOError, IndexError):
         return None, [], None, []    
 
+
 def prettify(x):
     try: 
         out = pprint.pformat(x)
     except Exception, e: 
-        out = '[could not display: <' + e.__class__.__name__ + \
-              ': '+str(e)+'>]'
+        out = '[could not display: <' + e.__class__.__name__ + ': '+str(e)+'>]'
     return out
-        
+
+
 def dicttable_items(items, kls="req"):
     if items:
-        out = '<table class="%s"><thead><tr><th>Variable</th><th>Value</th>' % kls
-        out = out + '</tr></thead><tbody>'
+        out = '<table class="%s"><thead><tr><th>Variable</th>' \
+              '<th>Value</th>' % kls
+        out += '</tr></thead><tbody>'
+
         for k, v in items:
-            out = out + '<tr><td>%s</td>' % escape(k)
-            out = out + '<td class="code"><div>%s</div></td></tr>' % escape(prettify(v))
-        out = out + "</tbody></table>"
+            out += '<tr><td>%s</td>' % escape(k)
+            out += '<td class="code"><div>%s</div></td></tr>' % \
+                   escape(prettify(v))
+        out += "</tbody></table>"
     else:
         out = "<p>No data.</p>"
     return out
+
 
 def dicttable (d, kls="req"):
     items = d and d.items() or []
     items.sort()
     return dicttable_items(items, kls)
+
 
 def debugerror():    
     exception_type, exception_value, tback = sys.exc_info()
@@ -155,82 +163,87 @@ def debugerror():
     </div>
     <div id="traceback">
     <h2>Traceback <span>(innermost first)</span></h2>
-    <ul class="traceback">""" % {"exception_type": escape(exception_type.__name__),
-                                 "exception_value": exception_value,
-                                 "context_home": escape(webapi.context["home"]),
-                                 "context_path": escape(webapi.context["path"]),
-                                 "context_method": escape(webapi.context["method"]),
-                                 "frame_file": escape(frames[0]["filename"]),
-                                 "frame_func": escape(frames[0]["function"]),
-                                 "frame_line": frames[0]["lineno"]}
+    <ul class="traceback">
+    """ % {
+        "exception_type": escape(exception_type.__name__),
+        "exception_value": exception_value,
+        "context_home": escape(webapi.context["home"]),
+        "context_path": escape(webapi.context["path"]),
+        "context_method": escape(webapi.context["method"]),
+        "frame_file": escape(frames[0]["filename"]),
+        "frame_func": escape(frames[0]["function"]),
+        "frame_line": frames[0]["lineno"]
+    }
     
     for frame in frames:
-        out = out +"""<li class="frame"><code>%s</code> 
-                in <code>%s</code>""" % (escape(frame["filename"]),
-                                         escape(frame["function"]))
-        if frame["context_line"] is not None:
-            out = out + '<div class="context" id="c%s">' % frame["id"]
-            if frame["pre_context"]:
-                out = out + """<ol start="%s" class="pre-context" 
-                             id="pre%s">""" % (frame["pre_context_lineno"],
-                                               frame["id"])
-                for line in frame["pre_context"]:
-                    out = out + """<li onclick="toggle('pre%(frameid)s', 
-                    'post%(frameid)s')">%(line)s</li>""" % {"frameid":frame["id"],
-                                                            "line":escape(line)}
+        out += """<li class="frame"><code>%s</code> in <code>%s</code>""" % \
+               (escape(frame["filename"]), escape(frame["function"]))
 
-                out = out + "</ol>"
-                out = out + """<ol start="%s" class="context-line">
+        if frame["context_line"] is not None:
+            out += '<div class="context" id="c%s">' % frame["id"]
+            if frame["pre_context"]:
+                out += """<ol start="%s" class="pre-context" id="pre%s">""" % \
+                       (frame["pre_context_lineno"], frame["id"])
+                for line in frame["pre_context"]:
+                    out += """<li onclick="toggle('pre%(frameid)s',
+                    'post%(frameid)s')">%(line)s</li>
+                    """ % {"frameid": frame["id"], "line": escape(line)}
+
+                out += "</ol>"
+                out += """<ol start="%s" class="context-line">
                 <li onclick="toggle('pre%s', 'post%s')">%s
-                </li></ol>""" % (frame["lineno"],frame["id"],
-                                 frame["id"],frame["context_line"])
+                </li></ol>
+                """ % (frame["lineno"], frame["id"],
+                       frame["id"], frame["context_line"])
                   
             if frame["post_context"]:
-                out = out + """<ol start="%s" class="post-context" 
-                id="post%s">""" % (frame["lineno"]+1,frame["id"])
+                out += """<ol start="%s" class="post-context"
+                id="post%s">""" % (frame["lineno"] + 1, frame["id"])
                 
                 for line in frame["post_context"]:
-                    out = out + """<li onclick="toggle('pre%s', 
-                    'post%s')">%s</li>""" % (frame["id"],
-                                             frame["id"],
-                                             escape(frame["context_line"]))
-                out = out + "</ol>"
-            out = out + "</div>"
+                    out += """<li onclick="toggle('pre%s',
+                    'post%s')">%s</li>
+                    """ % (frame["id"], frame["id"],
+                           escape(frame["context_line"]))
+                out += "</ol>"
+            out += "</div>"
         
         if frame["vars"]:
-            out = out + """<div class="commands"><a href='#' onclick="return varToggle(this, 
-            '%s')"><span>&#x25b6;</span> Local vars</a></div>""" % frame["id"]
-            out = out + dicttable(frame["vars"], kls='vars')
-        out = out + "</li>"
+            out += """<div class="commands"><a href='#'
+            onclick="return varToggle(this, '%s')"><span>&#x25b6;</span>
+            Local vars</a></div>""" % frame["id"]
+            out += dicttable(frame["vars"], kls='vars')
+        out += "</li>"
     
-    out = out + '</ul></div><div id="requestinfo">'
+    out += '</ul></div><div id="requestinfo">'
     
     if webapi.context["output"] or webapi.context["headers"]:
-        out = out + """<h2>Response so far</h2> <h3>HEADERS</h3>"""
-        out = out + dicttable(dict(webapi.getheaders()))
-        out = out + '<h3>BODY</h3><p class="req" style="padding-bottom: 2em"><code>'
-        out = out + str(escape(webapi.context["output"])) + "</code></p>"
+        out += """<h2>Response so far</h2> <h3>HEADERS</h3>"""
+        out += dicttable(dict(webapi.getheaders()))
+        out += '<h3>BODY</h3><p class="req" style="padding-bottom: 2em"><code>'
+        out += str(escape(webapi.context["output"])) + "</code></p>"
       
-    out = out + '<h2>Request information</h2>'
-    out = out + '<h3>INPUT</h3>'
-    out = out + dicttable(webapi.getall())
-    out = out + '<h3 id="cookie-info">COOKIES</h3>'
-    out = out + dicttable(webapi.cookies())
+    out += '<h2>Request information</h2>'
+    out += '<h3>INPUT</h3>'
+    out += dicttable(webapi.getall())
+    out += '<h3 id="cookie-info">COOKIES</h3>'
+    out += dicttable(webapi.cookies())
         
-    out = out + '<h3 id="meta-info">META</h3>'
+    out += '<h3 id="meta-info">META</h3>'
 
-    newctx = [(k, v) for (k, v) in webapi.context.iteritems() if not k.startswith('_') and not isinstance(v, dict)]
-    out = out + dicttable(dict(newctx))
+    newctx = [(k, v) for (k, v) in webapi.context.iteritems()
+              if not k.startswith('_') and not isinstance(v, dict)]
+    out += dicttable(dict(newctx))
     
-    out = out + '<h3 id="meta-info">ENV</h3>'
-    out = out + dicttable(webapi.context["environ"]) + '</div>'
+    out += '<h3 id="meta-info">ENV</h3>'
+    out += dicttable(webapi.context["environ"]) + '</div>'
 
     return error_template_start + out + error_template_end
 
 
 class _Index:
     def GET(self):
-        thisdoesnotexist  # lint:ok
+        pass  # lint:ok
 
 if __name__ == "__main__":
     from application import Application

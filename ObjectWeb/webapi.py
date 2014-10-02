@@ -1,33 +1,35 @@
 #!/usr/bin/python
-################################################################################
+# #############################################################################
 ## contact: abram@isola.mn || https://github.com/aisola/ObjectWeb
 ## license: LGPLv3
 ## @summary: This document creates several helper functions and framework
 ##           utilities. 
 ## maintainer: Abram C. Isola <abram@isola.mn>
 ## contrib: Abram C. Isola <abram@isola.mn> (all)
-################################################################################
+###############################################################################
 
-################################################################################
+###############################################################################
 # Import Standard Libraries
-################################################################################
+###############################################################################
+import sys
+import codecs
 import Cookie
 import urllib
 import itertools
 
-import sys, codecs
 from wsgiref.handlers import CGIHandler
 
 # Create the Application context
 global context
 context = {}
 
-################################################################################
+
+###############################################################################
 # _safestr functions from web.py
-################################################################################
+###############################################################################
+
 def _safestr(obj, encoding='utf-8'):
-    r"""
-    Converts any given object to utf-8 encoded string. 
+    """Converts any given object to utf-8 encoded string.
     
         >>> safestr('hello')
         'hello'
@@ -40,48 +42,50 @@ def _safestr(obj, encoding='utf-8'):
         return obj.encode(encoding)
     elif isinstance(obj, str):
         return obj
-    elif hasattr(obj, 'next'): # iterator
+    elif hasattr(obj, 'next'):  # iterator
         return itertools.imap(_safestr, obj)
     else:
         return str(obj)
 
-################################################################################
+
+###############################################################################
 # Unicode CGI Handler
-################################################################################
+###############################################################################
 
 class UnicodeCGIHandler(CGIHandler):
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
     _write = sys.stdout.write
 
-################################################################################
+
+###############################################################################
 # Attribute Helper Class
-################################################################################
+###############################################################################
 
 class AttributeList(dict):
-    
     def copy(self):
         return AttributeList(self)
-            
+
     def __str__(self):
         return " ".join(['%s="%s"' % (k, v) for k, v in self.items()])
-        
+
     def __repr__(self):
         return '<attrs: %s>' % repr(str(self))
 
-################################################################################
+
+###############################################################################
 # ObjectWeb Helper Functions
-################################################################################
+###############################################################################
+
 def getheaders():
-    """
-        Helper function that returns headers.
+    """Helper function that returns headers.
         
         @return: Returns all headers sent from the client.
     """
     return context["headers"]
 
+
 def header(field, value):
-    """
-        Sets a header to be sent back to the client.
+    """Sets a header to be sent back to the client.
         
         @param field: *str* The header name.
         
@@ -90,12 +94,12 @@ def header(field, value):
         @return: None
     """
     if field.lower() == "content-type":
-        value = value + ";charset=utf-8"
-    context["headers"].append((field,value))
-    
+        value += ";charset=utf-8"
+    context["headers"].append((field, value))
+
+
 def status(stat):
-    """
-        Sets the status to return to the client.
+    """Sets the status to return to the client.
         
         @param stat: *str* The response that will be returned to the client.
         
@@ -103,20 +107,20 @@ def status(stat):
     """
     context["status"] = str(stat)
 
+
 def redirect(location):
-    """
-        Sets the status to return to the client as 301 Moved Permanently.
+    """Sets the status to return to the client as 301 Moved Permanently.
         
         @param location: *str* The location to redirect to.
         
         @return: None
     """
     status("301 Moved Permanently")
-    header("Location",location)
+    header("Location", location)
+
 
 def seeother(location):
-    """
-        Sets the status to return to the client as 303 See Other.
+    """Sets the status to return to the client as 303 See Other.
         
         @param location: *str* The location to redirect to.
         
@@ -125,10 +129,10 @@ def seeother(location):
     status("303 See Other")
     header("Location", location)
 
+
 def setcookie(name, value, expires='', domain=None,
               secure=False, httponly=False, path=None):
-    """
-        Sets an HTTP Cookie.
+    """Sets an HTTP Cookie.
         
         @param name: *str* The Cookie name or identifier.
            
@@ -167,7 +171,7 @@ def setcookie(name, value, expires='', domain=None,
     # Set domain
     if domain:
         morsel['domain'] = domain
-    
+
     # Set secure
     if secure:
         morsel['secure'] = secure
@@ -181,10 +185,10 @@ def setcookie(name, value, expires='', domain=None,
 
     # Set Cookie
     header('Set-Cookie', value)
-    
+
+
 def cookies():
-    """
-        Gathers all recieved Cookies.
+    """Gathers all recieved Cookies.
         
         @return: List of Cookies or None if none exist.
     """
@@ -198,24 +202,24 @@ def cookies():
     else:
         return None
 
-def get(varname, default=None):
-    """
-        Returns the given HTTP parameter.
 
-        @param varname: *str* The name of the HTTP parameter that should be 
+def get(varname, default=None):
+    """Returns the given HTTP parameter.
+
+        @param varname: *str* The name of the HTTP parameter that should be
         returned.
-        
-        @param default: *object* The object that should be returned if the HTTP 
+
+        @param default: *object* The object that should be returned if the HTTP
         parameter does not exist.
-        
-        @return: The value of the HTTP parameter OR if provided, the value of 
+
+        @return: The value of the HTTP parameter OR if provided, the value of
         default OR if default is not provided, None.
     """
     return context["requestvars"].getfirst(varname, default=default)
 
+
 def getall(**kwargs):
-    """
-        Returns the given HTTP parameter.
+    """Returns the given HTTP parameter.
         
         @param **kwargs: *kwargs* The "name = default" pairs of the HTTP 
         parameters that should be returned.

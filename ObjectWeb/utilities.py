@@ -1,14 +1,15 @@
 #!/usr/bin/python
-################################################################################
+###############################################################################
 ## contact: abram@isola.mn || https://github.com/aisola/ObjectWeb
 ## license: LGPLv3
 ## @summary: This document creates several helper functions and framework
 ##           utilities.
 ## maintainer: Abram C. Isola <abram@isola.mn>
 ## contrib: Abram C. Isola <abram@isola.mn> (all)
-################################################################################
+###############################################################################
 
 import threading
+
 
 class cached_property(object):
     """A decorator that converts a function into a lazy property.
